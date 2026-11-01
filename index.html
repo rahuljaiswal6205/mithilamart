@@ -28,28 +28,23 @@
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* Flipkart Style Micro Animations */
     @keyframes pulseGlow {
       0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.6)); }
       50% { transform: scale(1.02); filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.8)); }
     }
     .animate-banner-glow { animation: pulseGlow 2.4s infinite ease-in-out; }
     
-    @keyframes slideUpCart {
+    @keyframes slideUpModal {
       from { transform: translateY(100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-    .animate-slide-up { animation: slideUpCart 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-slide-up { animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    @keyframes shimmerMove {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
+    @keyframes popIn {
+      0% { transform: scale(0.85); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
-    .shimmer-bg {
-      background: linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.1) 100%);
-      background-size: 200% 100%;
-      animation: shimmerMove 3s infinite linear;
-    }
+    .animate-pop-in { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 pb-24 antialiased select-none">
@@ -57,8 +52,8 @@
   <!-- TOP FLASH SALE TICKER STRIP -->
   <div class="bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 text-white text-[10px] sm:text-xs font-bold py-1.5 px-3 flex items-center justify-between shadow sticky top-0 z-50">
     <div class="flex items-center gap-1.5 truncate">
-      <span class="bg-yellow-300 text-red-700 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider animate-pulse">Diwali Dhamaka</span>
-      <span class="truncate">Flat ₹100 OFF on orders above ₹599 (Code: DIWALI100)</span>
+      <span class="bg-yellow-300 text-red-700 text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider animate-pulse">Special Offer</span>
+      <span class="truncate">Save ₹50 on ₹200+ | Flat ₹100 OFF on ₹599+</span>
     </div>
     <div class="flex items-center gap-1 font-mono text-[10px] bg-black/40 px-2 py-0.5 rounded shrink-0">
       <i class="fa-solid fa-bolt text-yellow-300"></i>
@@ -69,17 +64,16 @@
   <!-- STICKY MOBILE-OPTIMIZED HEADER -->
   <header class="bg-[#9c1261] text-white sticky top-[28px] z-40 shadow-lg border-b border-pink-700/50">
     <div class="max-w-md mx-auto px-3 py-2 flex items-center justify-between gap-2">
-      <!-- MITHILAMART BRAND LOGO -->
+      <!-- PERFECT CIRCULAR LOGO (NO WHITE SQUARE CORNERS) -->
       <div onclick="window.resetStoreView()" class="flex items-center gap-2 cursor-pointer active:opacity-80 transition">
-        <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-1 shadow-md border border-amber-300 shrink-0">
-          <!-- Custom SVG Mithila Diya & Bazaar Emblem Logo -->
-          <svg viewBox="0 0 100 100" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="48" fill="#9c1261" />
-            <path d="M50 18C50 18 36 34 36 46C36 53.7 42.3 60 50 60C57.7 60 64 53.7 64 46C64 34 50 18 50 18Z" fill="#FBBF24" />
-            <path d="M50 28C50 28 42 38 42 46C42 50.4 45.6 54 50 54C54.4 54 58 50.4 58 46C58 38 50 28 50 28Z" fill="#EF4444" />
-            <path d="M22 62C22 62 30 76 50 76C70 76 78 62 78 62C78 62 68 70 50 70C32 70 22 62 22 62Z" fill="#FBBF24" />
-            <ellipse cx="50" cy="62" rx="30" ry="6" fill="#F59E0B" />
-          </svg>
+        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md border-2 border-amber-300 shrink-0 overflow-hidden">
+          <img 
+            id="storeMainLogo" 
+            src="logo.png" 
+            alt="MithilaMart" 
+            class="w-full h-full object-cover rounded-full"
+            onerror="this.onerror=null; this.src='https://placehold.co/100x100/9c1261/ffffff?text=MM';" 
+          />
         </div>
         <div class="leading-tight">
           <div class="flex items-center gap-1">
@@ -134,7 +128,7 @@
     </div>
   </header>
 
-  <!-- APP VIEWPORT CONTAINER (STRICT MOBILE-FIRST BOUNDARY) -->
+  <!-- APP VIEWPORT CONTAINER -->
   <main class="w-full max-w-md mx-auto px-3 pt-3 space-y-3.5">
 
     <!-- TAB 1: HOME CATALOG VIEW -->
@@ -142,7 +136,6 @@
 
       <!-- BADA FLIPKART STYLE FLASH SALE HERO BANNER -->
       <div class="relative bg-gradient-to-br from-red-600 via-rose-700 to-[#9c1261] text-white rounded-2xl p-4 shadow-md overflow-hidden border border-amber-300/40 animate-banner-glow">
-        <!-- Shimmer & Festive Decorative Circles -->
         <div class="absolute -top-12 -right-12 w-36 h-36 bg-amber-400/20 rounded-full blur-xl pointer-events-none"></div>
         <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-orange-400/20 rounded-full blur-lg pointer-events-none"></div>
         
@@ -161,7 +154,7 @@
               FLAT ₹100 OFF <span class="text-amber-300">DIWALI SPECIAL</span>
             </h2>
             <p class="text-xs text-pink-100 font-medium mt-0.5 leading-snug">
-              Sabhi crackers, mitti ke diye aur LED decorations par flat discount!
+              Crackers, Mitti ke Diye aur Puja samagri par bhari discount!
             </p>
           </div>
 
@@ -170,9 +163,10 @@
               <p class="text-[9px] uppercase tracking-wider text-pink-200 font-bold">Use Coupon</p>
               <p class="text-xs font-black tracking-widest text-amber-300">DIWALI100</p>
             </div>
-            <button onclick="window.autoApplyCoupon('DIWALI100'); window.switchTab('home');" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-4 py-2 rounded-xl shadow-lg active:scale-95 transition flex items-center gap-1.5">
+            <!-- WORKING GRAB OFFER: APPLIES COUPON + SWIPES DOWN TO PRODUCTS -->
+            <button onclick="window.grabOfferAndScroll('DIWALI100')" class="bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs px-4 py-2 rounded-xl shadow-lg active:scale-95 transition flex items-center gap-1.5 cursor-pointer">
               <span>Grab Offer</span>
-              <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              <i class="fa-solid fa-arrow-down text-[10px]"></i>
             </button>
           </div>
           
@@ -184,7 +178,7 @@
       </div>
 
       <!-- HORIZONTAL CATEGORY SELECTOR -->
-      <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1 text-xs font-bold">
+      <div id="catalogCategoriesAnchor" class="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1 text-xs font-bold scroll-mt-36">
         <button onclick="window.setCategory('All')" class="cat-pill px-3 py-1.5 rounded-xl whitespace-nowrap bg-[#9c1261] text-white border border-[#9c1261] shadow-xs">All Items</button>
         <button onclick="window.setCategory('Green Firecrackers & Sparklers')" class="cat-pill px-3 py-1.5 rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">✨ Green Crackers</button>
         <button onclick="window.setCategory('Traditional earthen diyas')" class="cat-pill px-3 py-1.5 rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">🪔 Mitti Diyas</button>
@@ -202,7 +196,7 @@
       <div id="productGrid" class="grid grid-cols-2 gap-2.5"></div>
     </div>
 
-    <!-- TAB 2: CART & MULTI-STEP CHECKOUT VIEW -->
+    <!-- TAB 2: CART & CHECKOUT -->
     <div id="cartTab" class="hidden space-y-3">
       <!-- Step 1: Cart Items Breakdown -->
       <div id="cartItemsView" class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-sm">
@@ -213,7 +207,7 @@
 
         <div id="cartItemList" class="divide-y divide-slate-100"></div>
 
-        <!-- FLIPKART STYLE PROMO CODE SECTION -->
+        <!-- REORDERED PROMO CODES: 200+ FIRST, THEN 599+ -->
         <div id="promoSectionBox" class="mt-3.5 p-3 bg-gradient-to-r from-pink-50 to-amber-50 border border-pink-200 rounded-xl space-y-2">
           <div class="flex items-center justify-between">
             <span class="font-black text-xs text-slate-900 flex items-center gap-1.5">
@@ -227,7 +221,7 @@
             <input 
               type="text" 
               id="promoInputCode" 
-              placeholder="DIWALI100 or RAHUL50" 
+              placeholder="RAHUL50 or DIWALI100" 
               class="flex-1 uppercase font-black text-xs border border-slate-300 rounded-xl px-3 py-2 outline-none focus:border-[#9c1261] bg-white placeholder-slate-400"
             />
             <button onclick="window.applyPromoCodeManual()" class="bg-[#9c1261] hover:bg-[#850f52] text-white px-3.5 py-2 rounded-xl font-bold text-xs shadow-sm active:scale-95 transition">
@@ -237,19 +231,21 @@
 
           <!-- Quick Tap Offer Cards -->
           <div class="grid grid-cols-2 gap-2 pt-1 text-[10px]">
+            <!-- 1st: ₹200+ Coupon -->
+            <div onclick="window.autoApplyCoupon('RAHUL50')" class="bg-white border-2 border-dashed border-pink-300 p-2 rounded-xl cursor-pointer hover:border-[#9c1261] shadow-xs">
+              <div class="flex items-center justify-between">
+                <p class="font-black text-[#9c1261] tracking-wider">RAHUL50</p>
+                <span class="text-[9px] font-bold text-emerald-600">Tap</span>
+              </div>
+              <p class="text-[9px] text-slate-600 font-semibold mt-0.5">₹50 OFF on ₹200+</p>
+            </div>
+            <!-- 2nd: ₹599+ Coupon -->
             <div onclick="window.autoApplyCoupon('DIWALI100')" class="bg-white border-2 border-dashed border-red-300 p-2 rounded-xl cursor-pointer hover:border-red-500 shadow-xs">
               <div class="flex items-center justify-between">
                 <p class="font-black text-red-600 tracking-wider">DIWALI100</p>
-                <span class="text-[9px] font-bold text-[#9c1261]">Tap</span>
+                <span class="text-[9px] font-bold text-red-600">Tap</span>
               </div>
               <p class="text-[9px] text-slate-600 font-semibold mt-0.5">₹100 OFF on ₹599+</p>
-            </div>
-            <div onclick="window.autoApplyCoupon('RAHUL50')" class="bg-white border-2 border-dashed border-pink-300 p-2 rounded-xl cursor-pointer hover:border-[#9c1261] shadow-xs">
-              <div class="flex items-center justify-between">
-                <p class="font-black text-slate-900 tracking-wider">RAHUL50</p>
-                <span class="text-[9px] font-bold text-[#9c1261]">Tap</span>
-              </div>
-              <p class="text-[9px] text-slate-600 font-semibold mt-0.5">₹50 OFF on ₹200+</p>
             </div>
           </div>
 
@@ -452,7 +448,6 @@
         </div>
       </div>
 
-      <!-- Recent Stored Orders on this phone -->
       <div id="myRecentOrdersSection" class="hidden space-y-2">
         <h4 class="font-black text-xs text-slate-700 flex items-center gap-1">
           <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> My Recent Orders
@@ -465,9 +460,9 @@
 
   </main>
 
-  <!-- MEESHO-STYLE MULTI-IMAGE PRODUCT DETAIL MODAL -->
+  <!-- MEESHO / FLIPKART STYLE PRODUCT DETAIL MODAL WITH RELATED PRODUCTS -->
   <div id="productDetailModal" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-3 hidden">
-    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-slide-up text-xs flex flex-col">
+    <div class="bg-white rounded-t-3xl sm:rounded-2xl max-w-md w-full max-h-[92vh] overflow-y-auto shadow-2xl animate-slide-up text-xs flex flex-col">
       <div class="sticky top-0 bg-white/95 backdrop-blur z-20 px-3.5 py-2.5 border-b flex items-center justify-between">
         <span class="font-bold text-slate-700 text-xs">Product Details</span>
         <button onclick="window.closeProductDetailModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200">
@@ -522,6 +517,17 @@
           </button>
         </div>
 
+        <!-- FLIPKART/MEESHO STYLE RELATED / SIMILAR PRODUCTS SECTION -->
+        <div class="pt-3 border-t border-slate-200">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="font-black text-slate-900 text-xs flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-[#9c1261]"></i> Similar Products You May Like
+            </h4>
+            <span class="text-[9px] text-slate-400">Swipe ➔</span>
+          </div>
+          <div id="relatedProductsTrack" class="flex gap-2 overflow-x-auto scrollbar-hide py-1"></div>
+        </div>
+
         <!-- Verified Reviews Feedback -->
         <div class="pt-2 border-t border-slate-100">
           <h4 class="font-black text-slate-900 text-xs flex items-center gap-1 mb-2">
@@ -530,6 +536,35 @@
           <div id="detailModalReviewsList" class="space-y-2"></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- FLIPKART STYLE NEW USER WELCOME GIFT POPUP MODAL -->
+  <div id="welcomeGiftModal" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-gradient-to-b from-amber-50 via-white to-pink-50 rounded-3xl max-w-xs w-full p-4 border-2 border-amber-300 text-center shadow-2xl animate-pop-in relative overflow-hidden">
+      <div class="absolute -top-10 -right-10 w-24 h-24 bg-red-500/10 rounded-full blur-lg"></div>
+      <button onclick="window.closeWelcomeModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center">
+        <i class="fa-solid fa-xmark text-xs"></i>
+      </button>
+
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-amber-400 to-red-500 text-white flex items-center justify-center text-2xl shadow-lg mt-1 mb-2 animate-bounce">
+        🎁
+      </div>
+
+      <span class="bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">New Customer Offer</span>
+      <h3 class="text-base font-black text-slate-900 mt-1 leading-snug">Welcome to MithilaMart!</h3>
+      <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+        Apne pehle order par payein <strong class="text-red-600">Special Diwali Gift Pack</strong> + Supaul District me <strong class="text-emerald-700">Free Doorstep Delivery!</strong>
+      </p>
+
+      <div class="my-3 p-2 bg-amber-100/70 border border-amber-300 rounded-xl text-[11px] text-amber-900 font-bold flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-sparkles text-amber-600"></i>
+        <span>Use Coupon: RAHUL50 for instant ₹50 OFF</span>
+      </div>
+
+      <button onclick="window.claimWelcomeOffer()" class="w-full bg-[#9c1261] hover:bg-[#850f52] text-white py-2.5 rounded-xl font-bold text-xs shadow-md active:scale-95 transition">
+        Claim Gift & Start Shopping
+      </button>
     </div>
   </div>
 
@@ -623,27 +658,33 @@
     <i class="fa-brands fa-whatsapp"></i>
   </a>
 
-  <!-- CLEAN STORE FOOTER (NO PERSONAL PHOTO) -->
+  <!-- CLEAN STORE FOOTER WITH CEO / FOUNDER DESIGNATION -->
   <footer class="mt-10 bg-slate-900 text-slate-300 px-4 pt-6 pb-20 text-center text-xs">
     <div class="max-w-md mx-auto space-y-3">
       <div class="flex items-center justify-center gap-2 text-white font-black text-base">
         <span>🛍️</span>
-        <span>MithilaMart — Supaul Ka Apna Bazaar</span>
+        <span>MithilaMart — Supaul</span>
       </div>
 
-      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3 text-slate-300 space-y-1.5">
-        <p class="text-amber-400 font-bold text-xs uppercase tracking-wider">
-          Direct Customer Care & Orders
-        </p>
+      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-3.5 text-slate-300 space-y-2">
+        <div class="inline-flex items-center gap-1.5 bg-amber-400/10 text-amber-300 px-3 py-1 rounded-full border border-amber-400/30">
+          <i class="fa-solid fa-shield-halved text-[10px]"></i>
+          <span class="font-extrabold text-[11px] tracking-wide">Rahul Jaiswal — Founder & CEO</span>
+        </div>
         <p class="text-[11px] text-slate-300">
           📍 Base Hub: Supaul District, Bihar, India
         </p>
-        <div class="flex justify-center items-center gap-4 pt-1 text-[11px]">
-          <a href="tel:+916205005743" class="text-pink-300 hover:underline flex items-center gap-1">
-            <i class="fa-solid fa-phone text-[10px]"></i> Helpline: +91 6205005743
+        <div class="flex justify-center items-center gap-3 pt-1 text-[11px]">
+          <a href="mailto:RahulJaiswal6205@gmail.com" class="text-pink-300 hover:underline flex items-center gap-1">
+            <i class="fa-solid fa-envelope text-[10px]"></i> Email
           </a>
-          <a href="https://wa.me/917484005743" target="_blank" class="text-pink-300 hover:underline flex items-center gap-1">
-            <i class="fa-brands fa-whatsapp text-[11px]"></i> Order: +91 7484005743
+          <span class="text-slate-600">•</span>
+          <a href="https://instagram.com/official_rahul_675" target="_blank" class="text-pink-300 hover:underline flex items-center gap-1">
+            <i class="fa-brands fa-instagram text-[11px]"></i> @official_rahul_675
+          </a>
+          <span class="text-slate-600">•</span>
+          <a href="tel:+916205005743" class="text-pink-300 hover:underline flex items-center gap-1">
+            <i class="fa-solid fa-phone text-[10px]"></i> Helpline
           </a>
         </div>
       </div>
@@ -654,7 +695,7 @@
     </div>
   </footer>
 
-  <!-- BOTTOM NAVIGATION BAR (SPARKLERS TAB REMOVED, BALANCED 4 TABS) -->
+  <!-- BOTTOM NAVIGATION BAR (BALANCED 4 TABS) -->
   <nav id="bottomAppNav" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-2 px-3 flex justify-around items-center z-40 text-[10px] font-semibold shadow-lg">
     <button onclick="window.switchTab('home')" id="navHome" class="flex flex-col items-center text-[#9c1261]">
       <i class="fa-solid fa-house text-base"></i>
@@ -682,6 +723,7 @@
       merchantName: 'Bebi Chaudhary',
       rawPhone: '917484005743',
       helplinePhone: '916205005743',
+      founderRole: 'Rahul Jaiswal — Founder & CEO',
       freeDeliveryLimit: 199,
       standardDeliveryFee: 40,
       codFeeBelow99: 19,
@@ -767,7 +809,6 @@
       } catch (err) {}
     }
 
-    // COUNTDOWN TIMER LOGIC
     function startFlashSaleTimer() {
       var duration = 5 * 3600 + 12 * 60 + 30;
       setInterval(function() {
@@ -784,14 +825,42 @@
       }, 1000);
     }
 
-    // COUPON VALIDATION LOGIC (₹100 OFF on ₹599+)
+    function checkNewUserWelcomePopup() {
+      var hasSeen = localStorage.getItem('mithilamart_seen_welcome');
+      if (!hasSeen) {
+        setTimeout(function() {
+          document.getElementById('welcomeGiftModal')?.classList.remove('hidden');
+        }, 800);
+      }
+    }
+
+    window.closeWelcomeModal = function() {
+      document.getElementById('welcomeGiftModal')?.classList.add('hidden');
+      localStorage.setItem('mithilamart_seen_welcome', 'true');
+    };
+
+    window.claimWelcomeOffer = function() {
+      window.closeWelcomeModal();
+      window.autoApplyCoupon('RAHUL50');
+      window.grabOfferAndScroll('RAHUL50');
+    };
+
+    window.grabOfferAndScroll = function(code) {
+      window.autoApplyCoupon(code);
+      triggerConfetti();
+      var target = document.getElementById('catalogCategoriesAnchor');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
     function evaluatePromoDiscount(subtotal) {
       if (!appliedPromoCode) return 0;
       var code = appliedPromoCode.toUpperCase();
-      if (code === 'DIWALI100') {
-        if (subtotal >= 599) return 100;
-      } else if (code === 'RAHUL50') {
+      if (code === 'RAHUL50') {
         if (subtotal >= 200) return 50;
+      } else if (code === 'DIWALI100') {
+        if (subtotal >= 599) return 100;
       }
       return 0;
     }
@@ -817,16 +886,7 @@
       }
 
       var totals = calculateOrderTotals();
-      if (code === 'DIWALI100') {
-        if (totals.subtotal < 599) {
-          if (msgEl) {
-            msgEl.innerText = "DIWALI100 coupon ke liye minimum ₹599 ka order hona chahiye.";
-            msgEl.className = "text-[10px] font-bold text-center text-red-600";
-            msgEl.classList.remove('hidden');
-          }
-          return;
-        }
-      } else if (code === 'RAHUL50') {
+      if (code === 'RAHUL50') {
         if (totals.subtotal < 200) {
           if (msgEl) {
             msgEl.innerText = "RAHUL50 ke liye minimum ₹200 ka order hona chahiye.";
@@ -835,9 +895,18 @@
           }
           return;
         }
+      } else if (code === 'DIWALI100') {
+        if (totals.subtotal < 599) {
+          if (msgEl) {
+            msgEl.innerText = "DIWALI100 coupon ke liye minimum ₹599 ka order hona chahiye.";
+            msgEl.className = "text-[10px] font-bold text-center text-red-600";
+            msgEl.classList.remove('hidden');
+          }
+          return;
+        }
       } else {
         if (msgEl) {
-          msgEl.innerText = "Invalid code! Kripya DIWALI100 ya RAHUL50 use karein.";
+          msgEl.innerText = "Invalid code! Kripya RAHUL50 ya DIWALI100 use karein.";
           msgEl.className = "text-[10px] font-bold text-center text-red-600";
           msgEl.classList.remove('hidden');
         }
@@ -864,12 +933,11 @@
     function triggerConfetti() {
       try {
         if (typeof window.confetti === 'function') {
-          window.confetti({ particleCount: 75, spread: 60, origin: { y: 0.6 } });
+          window.confetti({ particleCount: 75, spread: 65, origin: { y: 0.6 } });
         }
       } catch (e) {}
     }
 
-    // CSV PARSER
     function parseCSV(text) {
       var rows = [];
       var currentRow = [];
@@ -955,7 +1023,6 @@
         });
     }
 
-    // REAL-TIME GLOBAL SEARCH ENGINE
     window.runGlobalSearch = function(query) {
       var clearBtn = document.getElementById('clearSearchBtn');
       if (clearBtn) clearBtn.classList.toggle('hidden', !query);
@@ -1121,7 +1188,6 @@
       }
       listContainer.innerHTML = html;
 
-      // Promo Box State
       var appliedPromoBox = document.getElementById('appliedPromoStatus');
       var appliedPromoText = document.getElementById('appliedPromoText');
       var discountRow = document.getElementById('billDiscountRow');
@@ -1585,6 +1651,28 @@
         thumbTrack.innerHTML = tHtml;
       }
 
+      var relTrack = document.getElementById('relatedProductsTrack');
+      if (relTrack) {
+        var relatedItems = [];
+        for (var rIdx = 0; rIdx < PRODUCTS.length; rIdx++) {
+          if (PRODUCTS[rIdx].id !== p.id && (PRODUCTS[rIdx].category === p.category || relatedItems.length < 4)) {
+            relatedItems.push(PRODUCTS[rIdx]);
+          }
+          if (relatedItems.length >= 6) break;
+        }
+
+        var relHtml = '';
+        for (var relI = 0; relI < relatedItems.length; relI++) {
+          var relP = relatedItems[relI];
+          relHtml += '<div onclick="window.openProductDetailModal(\'' + relP.id + '\')" class="min-w-[125px] max-w-[125px] bg-slate-50 border border-slate-200 rounded-xl p-2 cursor-pointer hover:border-[#9c1261] shrink-0 transition flex flex-col justify-between">' +
+            '<img src="' + relP.image + '" class="w-full h-20 object-cover rounded-lg" />' +
+            '<p class="font-bold text-[10px] text-slate-800 line-clamp-1 mt-1">' + relP.name + '</p>' +
+            '<div class="flex items-center justify-between mt-1"><span class="font-black text-xs text-[#9c1261]">₹' + relP.price + '</span>' +
+            '<span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1 rounded">View</span></div></div>';
+        }
+        relTrack.innerHTML = relHtml || '<p class="text-slate-400 text-[10px]">No more items in this category.</p>';
+      }
+
       document.getElementById('detailModalWaBtn').onclick = function() { window.orderItemOnWhatsAppById(p.id); };
       document.getElementById('detailModalCartBtn').onclick = function() {
         window.addToCart(p.id);
@@ -1706,7 +1794,6 @@
       }
     }
 
-    // INIT APP
     window.addEventListener('DOMContentLoaded', function() {
       initLocalStorageData();
       startFlashSaleTimer();
@@ -1714,6 +1801,7 @@
       renderCart();
       renderMyRecentOrders();
       loadProductsFromGoogleSheet();
+      checkNewUserWelcomePopup();
 
       document.getElementById('addressFormElement')?.addEventListener('submit', function(e) {
         e.preventDefault();
