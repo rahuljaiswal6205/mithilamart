@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>MithilaMart — Mithila Ka Apna Online Bazaar</title>
 
-  <!-- PWA Meta Tags & Web Manifest -->
+  <!-- PWA Settings & Web Manifest -->
   <meta name="theme-color" content="#9c1261" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="description" content="MithilaMart Supaul - Fastest Local Grocery, Pooja & Household Store" />
-  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWl0aGlsYU1hcnQiLCJzaG9ydF9uYW1lIjoiTWl0aGlsYU1hcnQiLCJzdGFydF91cmwiOiIvIiwidGhlbWVfY29sb3IiOiIjOWMxMjYxIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmNWY2ZjgiLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSJ9" />
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiTWl0aGlsYU1hcnQiLCJzaG9ydF9uYW1lIjoiTWl0aGlsYU1hcnQiLCJzdGFydF91cmwiOiIvIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y1ZjZmOCIsInRoZW1lX2NvbG9yIjoiIzljMTI2MSIsImljb25zIjpbeyJzcmMiOiJsb2dvLnBuZyIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9wbmcifSx7InNyYyI6ImxvZ28ucG5nIiwic2l6ZXMiOiI1MTJ4NTEyIiwidHlwZSI6ImltYWdlL3BuZyJ9XX0=" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -90,9 +93,9 @@
 
       <!-- PWA INSTALL + BADGES -->
       <div class="flex items-center gap-1.5">
-        <button id="pwaInstallHeaderBtn" onclick="window.installPwaApp()" class="hidden bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black rounded-full px-2 py-1 text-[10px] shadow active:scale-95 transition flex items-center gap-1">
+        <button id="pwaInstallHeaderBtn" onclick="window.installPwaApp()" class="hidden bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 font-black rounded-full px-2.5 py-1 text-[10px] shadow active:scale-95 transition flex items-center gap-1 animate-pulse">
           <i class="fa-solid fa-download text-[9px]"></i>
-          <span>App</span>
+          <span>Install App</span>
         </button>
 
         <button onclick="window.openPincodeModal()" class="flex items-center gap-1 bg-black/25 border border-pink-400/40 text-white rounded-full px-2 py-1 text-[11px] font-semibold active:scale-95 transition">
@@ -758,7 +761,7 @@
   <!-- JAVASCRIPT APPLICATION CORE -->
   <script>
     var APP_CONFIG = {
-      telegramToken: '9113283367:AAF3fP2WbH2i67oYqF3E_8k8T6K2V9xY0zA',
+      telegramToken: '9113283367:AAEI-UDmxFs2WG6Z9AI8LCoCh3H3_WnMCno',
       telegramChatId: '8214642524',
       upiId: '6205005743@ptyes',
       merchantName: 'Bebi Chaudhary',
@@ -786,26 +789,68 @@
     var latestOrder = null;
     var appliedPromoCode = null;
 
+    /* PWA AUTO SERVICE-WORKER SETUP */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        var swCode = "self.addEventListener('install', function(e) { self.skipWaiting(); });" +
+                     "self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request).catch(function() { return new Response(''); })); });";
+        var blob = new Blob([swCode], { type: 'application/javascript' });
+        var swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(function() {});
+      });
+    }
+
+    var deferredPwaPrompt = null;
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPwaPrompt = e;
+      var btn = document.getElementById('pwaInstallHeaderBtn');
+      if (btn) btn.classList.remove('hidden');
+    });
+
+    window.installPwaApp = function() {
+      if (deferredPwaPrompt) {
+        deferredPwaPrompt.prompt();
+        deferredPwaPrompt.userChoice.then(function(choice) {
+          if (choice.outcome === 'accepted') {
+            var btn = document.getElementById('pwaInstallHeaderBtn');
+            if (btn) btn.classList.add('hidden');
+          }
+          deferredPwaPrompt = null;
+        });
+      } else {
+        alert("Mobile browser ke 3-dots menu par tap karke 'Add to Home screen' chunein.");
+      }
+    };
+
+    /* AUTOMATIC BROKEN IMAGE RESCUE */
     window.addEventListener('error', function(e) {
       if (e.target && e.target.tagName === 'IMG') {
         e.target.src = 'https://placehold.co/400x300/9c1261/ffffff?text=MithilaMart';
       }
     }, true);
 
+    /* ULTRA-FAST CDN RESOLVER (Google Direct Thumbnail Engine) */
     function getOptimizedCdnUrl() {
       var url = arguments[0];
       var width = arguments[1] || 320;
-      if (!url || typeof url !== 'string' || url.indexOf('http') !== 0) {
+      if (!url || typeof url !== 'string' || url.trim() === '' || url.indexOf('http') !== 0) {
         return 'https://placehold.co/400x300/9c1261/ffffff?text=MithilaMart';
       }
-      var clean = url;
-      if (url.indexOf('drive.google.com') !== -1) {
-        var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
-        if (m && m[1]) clean = 'https://drive.google.com/uc?export=view&id=' + m[1];
+      var clean = url.trim();
+
+      if (clean.indexOf('drive.google.com') !== -1) {
+        var idMatch = clean.match(/\/d\/([a-zA-Z0-9_-]+)/) || 
+                      clean.match(/id=([a-zA-Z0-9_-]+)/) || 
+                      clean.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+          return 'https://lh3.googleusercontent.com/d/' + idMatch[1] + '=s' + width;
+        }
       }
       return 'https://wsrv.nl/?url=' + encodeURIComponent(clean) + '&w=' + width + '&q=80&output=webp';
     }
 
+    /* AUDIO CHIME BUZZER */
     function playStoreAudio() {
       var type = arguments[0] || 'add';
       try {
@@ -844,6 +889,7 @@
       } catch (e) {}
     }
 
+    /* TELEGRAM BOT NOTIFICATION SENDER */
     function sendTelegramAlert() {
       var htmlText = arguments[0];
       if (!APP_CONFIG.telegramToken || !APP_CONFIG.telegramChatId) return;
@@ -1961,27 +2007,6 @@
         if (lInp && customerInfo.landmark) lInp.value = customerInfo.landmark;
       }
     }
-
-    var deferredPwaPrompt = null;
-    window.addEventListener('beforeinstallprompt', function(e) {
-      e.preventDefault();
-      deferredPwaPrompt = e;
-      var btn = document.getElementById('pwaInstallHeaderBtn');
-      if (btn) btn.classList.remove('hidden');
-    });
-
-    window.installPwaApp = function() {
-      if (deferredPwaPrompt) {
-        deferredPwaPrompt.prompt();
-        deferredPwaPrompt.userChoice.then(function() {
-          deferredPwaPrompt = null;
-          var btn = document.getElementById('pwaInstallHeaderBtn');
-          if (btn) btn.classList.add('hidden');
-        });
-      } else {
-        alert("Mobile browser ke menu (3 dots) par tap karke 'Add to Home screen' chunein.");
-      }
-    };
 
     window.addEventListener('DOMContentLoaded', function() {
       initLocalStorageData();
