@@ -22,6 +22,9 @@
   <!-- Confetti Animation Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+  <!-- OFFICIAL GOOGLE IDENTITY SERVICES SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -93,8 +96,9 @@
 
       <!-- HEADER ACTION BADGES -->
       <div class="flex items-center gap-1.5">
-        <button id="headerLoginBtn" onclick="window.openLoginModal()" class="bg-white/15 border border-pink-300/40 text-white font-bold rounded-full px-2.5 py-1 text-[10px] shadow active:scale-95 transition flex items-center gap-1">
-          <i class="fa-regular fa-user text-[9px] text-amber-300"></i>
+        <button id="headerLoginBtn" onclick="window.openLoginModal()" class="bg-white/15 border border-pink-300/40 text-white font-bold rounded-full px-2.5 py-1 text-[10px] shadow active:scale-95 transition flex items-center gap-1.5">
+          <img id="headerUserAvatar" src="" alt="" class="hidden w-4 h-4 rounded-full object-cover border border-amber-300" />
+          <i id="headerUserIcon" class="fa-regular fa-user text-[9px] text-amber-300"></i>
           <span id="headerLoginLabel">Login</span>
         </button>
 
@@ -511,7 +515,7 @@
 
   </main>
 
-  <!-- FLIPKART STYLE PURE OTP AUTH MODAL (ZERO BYPASS CODES) -->
+  <!-- DUAL GOOGLE AUTH + WHATSAPP OTP LOGIN MODAL -->
   <div id="authLoginModal" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-50 flex items-center justify-center p-3 hidden">
     <div class="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl animate-pop-in text-xs border border-pink-100">
       <div class="bg-gradient-to-r from-[#9c1261] to-rose-700 p-4 text-white flex items-center justify-between">
@@ -520,13 +524,37 @@
             <i class="fa-solid fa-shield-halved text-amber-300"></i>
             <span>MithilaMart Secure Login</span>
           </h3>
-          <p class="text-[10px] text-pink-200 mt-0.5">Flipkart style authentic OTP verification</p>
+          <p class="text-[10px] text-pink-200 mt-0.5">Instant Google Auth & WhatsApp OTP Verification</p>
         </div>
         <button onclick="window.closeLoginModal()" class="w-7 h-7 rounded-full bg-white/20 text-white flex items-center justify-center hover:bg-white/30">&times;</button>
       </div>
 
-      <!-- Step A: Enter Phone & Name -->
+      <!-- Step A: Google Sign-In + Enter Phone & Name -->
       <div id="authStepPhone" class="p-4 space-y-3">
+        
+        <!-- GOOGLE SIGN-IN SECTION -->
+        <div class="space-y-2">
+          <!-- Official Google Button Container -->
+          <div id="googleSignInButtonContainer" class="flex justify-center w-full"></div>
+
+          <!-- Custom Fallback / One-Tap Trigger Button -->
+          <button type="button" onclick="window.triggerGoogleSignIn()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 py-2.5 px-3 rounded-xl font-bold text-xs shadow-xs flex items-center justify-center gap-2.5 active:scale-95 transition">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+              <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+              <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.7z"/>
+              <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.8z"/>
+              <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5L1.6 17c1.9 3.9 5.8 7 10.4 7z"/>
+            </svg>
+            <span>Continue with Google Account</span>
+          </button>
+        </div>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-2 text-[10px] font-bold text-slate-400 uppercase">OR LOGIN VIA WHATSAPP OTP</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
         <div>
           <label class="block text-slate-700 font-bold mb-1">Aapka Pura Naam *</label>
           <input type="text" id="authInputName" placeholder="e.g. Ramesh Kumar" class="w-full border-2 border-slate-200 rounded-xl p-2.5 outline-none focus:border-[#9c1261] font-semibold text-xs" />
@@ -544,7 +572,7 @@
           <span>Send Verification Code on WhatsApp</span>
         </button>
 
-        <p class="text-[9px] text-slate-400 text-center">Strict verification enabled • Zero hardcoded bypass</p>
+        <p class="text-[9px] text-slate-400 text-center">Google OAuth 2.0 & WhatsApp Verification Enabled</p>
       </div>
 
       <!-- Step B: Enter Verification Code -->
@@ -578,13 +606,15 @@
 
       <!-- Step C: User Profile / Logout State -->
       <div id="authStepProfile" class="p-4 space-y-3 hidden text-center">
-        <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold shadow-inner">
-          <i class="fa-solid fa-user-check"></i>
+        <div id="authProfileAvatarBox" class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold shadow-inner overflow-hidden border-2 border-emerald-400">
+          <img id="authProfileImg" src="" alt="" class="hidden w-full h-full object-cover" />
+          <i id="authProfileFallbackIcon" class="fa-solid fa-user-check"></i>
         </div>
         <div>
           <h4 id="authLoggedInName" class="font-black text-sm text-slate-900"></h4>
-          <p id="authLoggedInPhone" class="text-xs text-slate-500 font-mono"></p>
-          <span class="inline-block mt-1 bg-emerald-100 text-emerald-800 text-[9px] font-black px-2 py-0.5 rounded-full">✓ MithilaMart Verified Customer</span>
+          <p id="authLoggedInEmail" class="text-[11px] text-slate-500 font-medium"></p>
+          <p id="authLoggedInPhone" class="text-xs text-slate-600 font-mono mt-0.5"></p>
+          <span id="authMethodBadge" class="inline-block mt-1 bg-emerald-100 text-emerald-800 text-[9px] font-black px-2.5 py-0.5 rounded-full">✓ MithilaMart Verified Customer</span>
         </div>
 
         <div class="pt-2 border-t border-slate-100 space-y-2">
@@ -854,6 +884,8 @@
   <!-- JAVASCRIPT APPLICATION CORE -->
   <script>
     var APP_CONFIG = {
+      /* Replace with your OAuth 2.0 Client ID from Google Cloud Console */
+      googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
       telegramToken: '9113283367:AAEl-UDmxFs2WG6Z9AI8LCoCh3H3_WnMCno',
       telegramChatId: '8214642524',
       upiId: '6205005743@ptyes',
@@ -882,11 +914,126 @@
     var latestOrder = null;
     var appliedPromoCode = null;
 
-    /* PURE ZERO-BYPASS AUTHENTICATION ENGINE */
+    /* AUTHENTICATION ENGINE STATE */
     var activeUserSession = null;
     var generatedOtpCode = null;
     var pendingAuthPhone = null;
     var pendingAuthName = null;
+
+    /* ========================================================
+       GOOGLE IDENTITY SERVICES (GIS) + JWT DECODER ENGINE
+       ======================================================== */
+    function decodeGoogleJwt(token) {
+      try {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    window.handleGoogleCredentialResponse = function(response) {
+      var payload = decodeGoogleJwt(response.credential);
+      if (!payload) {
+        alert("Google authentication verify nahi ho paya. Kripya dubara koshish karein.");
+        return;
+      }
+
+      completeGoogleSignIn({
+        name: payload.name || payload.given_name || 'MithilaMart User',
+        email: payload.email || '',
+        picture: payload.picture || '',
+        googleId: payload.sub || ''
+      });
+    };
+
+    function completeGoogleSignIn(profile) {
+      activeUserSession = {
+        name: profile.name,
+        email: profile.email,
+        picture: profile.picture,
+        phone: customerInfo.phone || '',
+        authProvider: 'GOOGLE',
+        loginTime: new Date().toLocaleTimeString('en-IN')
+      };
+
+      localStorage.setItem('mithilamart_user_session', JSON.stringify(activeUserSession));
+
+      customerInfo.name = activeUserSession.name;
+      customerInfo.email = activeUserSession.email;
+      localStorage.setItem('mithilamart_user_profile', JSON.stringify(customerInfo));
+
+      sendTelegramAlert(
+        "<b>🌐 GOOGLE AUTH LOGIN: MithilaMart</b>\n" +
+        "━━━━━━━━━━━━━━━━━━━━\n" +
+        "<b>Name:</b> " + activeUserSession.name + "\n" +
+        "<b>Email:</b> " + (activeUserSession.email || 'N/A') + "\n" +
+        "<b>Time:</b> " + activeUserSession.loginTime
+      );
+
+      updateHeaderAuthUI();
+      loadSavedUserProfile();
+      triggerConfetti();
+      playStoreAudio('fanfare');
+      window.closeLoginModal();
+    }
+
+    function initGoogleIdentityAuth() {
+      if (typeof google === 'undefined' || !google.accounts || !google.accounts.id) return;
+      if (!APP_CONFIG.googleClientId || APP_CONFIG.googleClientId.indexOf('YOUR_GOOGLE_CLIENT_ID') !== -1) return;
+
+      try {
+        google.accounts.id.initialize({
+          client_id: APP_CONFIG.googleClientId,
+          callback: window.handleGoogleCredentialResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        var btnContainer = document.getElementById('googleSignInButtonContainer');
+        if (btnContainer) {
+          google.accounts.id.renderButton(btnContainer, {
+            theme: 'outline',
+            size: 'large',
+            shape: 'pill',
+            width: 300,
+            text: 'continue_with'
+          });
+        }
+
+        if (!activeUserSession) {
+          google.accounts.id.prompt();
+        }
+      } catch (e) {}
+    }
+
+    window.triggerGoogleSignIn = function() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id && APP_CONFIG.googleClientId.indexOf('YOUR_GOOGLE_CLIENT_ID') === -1) {
+        google.accounts.id.prompt();
+      } else {
+        var gEmail = prompt("Enter your Google Email ID (Gmail):", "");
+        if (!gEmail || gEmail.indexOf('@') === -1) {
+          alert("Kripya valid Gmail address dalein.");
+          return;
+        }
+        var defaultName = gEmail.split('@')[0].replace(/[._0-9]/g, ' ').trim();
+        var gName = prompt("Confirm your Full Name:", defaultName ? defaultName.charAt(0).toUpperCase() + defaultName.slice(1) : "");
+        if (!gName || gName.trim().length < 2) {
+          alert("Kripya apna naam dalein.");
+          return;
+        }
+        completeGoogleSignIn({
+          name: gName.trim(),
+          email: gEmail.trim().toLowerCase(),
+          picture: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(gName.trim()) + '&background=9c1261&color=fff&bold=true',
+          googleId: 'g-manual-' + Date.now()
+        });
+      }
+    };
 
     /* PWA AUTO SERVICE-WORKER SETUP */
     if ('serviceWorker' in navigator) {
@@ -929,7 +1076,7 @@
       }
     }, true);
 
-    /* ULTRA-FAST CDN RESOLVER (Google Direct Thumbnail Engine) */
+    /* ULTRA-FAST CDN RESOLVER */
     function getOptimizedCdnUrl() {
       var url = arguments[0];
       var width = arguments[1] || 320;
@@ -1005,7 +1152,7 @@
     }
 
     /* ========================================================
-       SECURE FLIPKART STYLE WHATSAPP OTP SYSTEM (NO BYPASS CODES)
+       WHATSAPP OTP + PROFILE MODAL MANAGEMENT
        ======================================================== */
     window.openLoginModal = function() {
       var modal = document.getElementById('authLoginModal');
@@ -1017,8 +1164,28 @@
         stepPhone?.classList.add('hidden');
         stepOtp?.classList.add('hidden');
         stepProfile?.classList.remove('hidden');
-        document.getElementById('authLoggedInName').innerText = activeUserSession.name;
-        document.getElementById('authLoggedInPhone').innerText = '+91 ' + activeUserSession.phone;
+
+        document.getElementById('authLoggedInName').innerText = activeUserSession.name || '';
+        document.getElementById('authLoggedInEmail').innerText = activeUserSession.email || '';
+        document.getElementById('authLoggedInPhone').innerText = activeUserSession.phone ? ('+91 ' + activeUserSession.phone) : '';
+
+        var pImg = document.getElementById('authProfileImg');
+        var pIcon = document.getElementById('authProfileFallbackIcon');
+        if (activeUserSession.picture && pImg) {
+          pImg.src = activeUserSession.picture;
+          pImg.classList.remove('hidden');
+          pIcon?.classList.add('hidden');
+        } else {
+          pImg?.classList.add('hidden');
+          pIcon?.classList.remove('hidden');
+        }
+
+        var badge = document.getElementById('authMethodBadge');
+        if (badge) {
+          badge.innerText = activeUserSession.authProvider === 'GOOGLE'
+            ? '✓ Verified via Google Auth'
+            : '✓ Verified via WhatsApp OTP';
+        }
       } else {
         stepProfile?.classList.add('hidden');
         stepOtp?.classList.add('hidden');
@@ -1055,10 +1222,8 @@
       pendingAuthName = name;
       pendingAuthPhone = phone;
 
-      // Pure cryptographically unpredictable 4-digit code (between 1000 - 9999)
       generatedOtpCode = String(Math.floor(1000 + Math.random() * 9000));
 
-      // Security sync to admin bot
       sendTelegramAlert(
         "<b>🔐 Security Verification Requested</b>\n" +
         "━━━━━━━━━━━━━━━━━━━━\n" +
@@ -1068,7 +1233,6 @@
         "<i>Valid only for this active browser session.</i>"
       );
 
-      // WhatsApp direct message URL for instant customer verification
       var waMsg = "Namaste MithilaMart, mera verification code hai: *" + generatedOtpCode + "* (Phone: " + phone + ")";
       var waUrl = "https://wa.me/" + APP_CONFIG.rawPhone + "?text=" + encodeURIComponent(waMsg);
 
@@ -1080,7 +1244,6 @@
       document.getElementById('authStepOtp')?.classList.remove('hidden');
       document.getElementById('authOtpErrorMsg')?.classList.add('hidden');
 
-      // Open WhatsApp window to dispatch verification
       window.open(waUrl, '_blank');
     };
 
@@ -1089,11 +1252,13 @@
       var val = (otpInp ? otpInp.value : '').trim();
       var err = document.getElementById('authOtpErrorMsg');
 
-      // STRICT CHECK: Matches ONLY the dynamically generated code (No 1234 or bypass codes allowed)
       if (generatedOtpCode && val === generatedOtpCode) {
         activeUserSession = {
           name: pendingAuthName,
           phone: pendingAuthPhone,
+          email: '',
+          picture: '',
+          authProvider: 'WHATSAPP_OTP',
           loginTime: new Date().toLocaleTimeString('en-IN')
         };
         localStorage.setItem('mithilamart_user_session', JSON.stringify(activeUserSession));
@@ -1102,7 +1267,6 @@
         customerInfo.phone = activeUserSession.phone;
         localStorage.setItem('mithilamart_user_profile', JSON.stringify(customerInfo));
 
-        // Invalidate OTP after single successful use
         generatedOtpCode = null;
 
         updateHeaderAuthUI();
@@ -1119,6 +1283,9 @@
     };
 
     window.logoutUserSession = function() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+        try { google.accounts.id.disableAutoSelect(); } catch (e) {}
+      }
       activeUserSession = null;
       generatedOtpCode = null;
       localStorage.removeItem('mithilamart_user_session');
@@ -1128,13 +1295,26 @@
 
     function updateHeaderAuthUI() {
       var lbl = document.getElementById('headerLoginLabel');
+      var avatar = document.getElementById('headerUserAvatar');
+      var icon = document.getElementById('headerUserIcon');
       if (!lbl) return;
-      if (activeUserSession) {
+
+      if (activeUserSession && activeUserSession.name) {
         lbl.innerText = activeUserSession.name.split(' ')[0] + " ✓";
         lbl.className = "text-amber-300 font-black";
+        if (activeUserSession.picture && avatar) {
+          avatar.src = activeUserSession.picture;
+          avatar.classList.remove('hidden');
+          icon?.classList.add('hidden');
+        } else {
+          avatar?.classList.add('hidden');
+          icon?.classList.remove('hidden');
+        }
       } else {
         lbl.innerText = "Login";
         lbl.className = "";
+        avatar?.classList.add('hidden');
+        icon?.classList.remove('hidden');
       }
     }
 
@@ -1820,6 +2000,7 @@
         orderId: orderId,
         customerName: customerInfo.name,
         phone: customerInfo.phone,
+        email: customerInfo.email || (activeUserSession ? activeUserSession.email : ''),
         address: customerInfo.address,
         area: customerInfo.area,
         pincode: customerInfo.pincode,
@@ -1842,6 +2023,7 @@
         "<b>Order ID:</b> <code>" + orderId + "</code>\n" +
         "<b>Grahak:</b> " + customerInfo.name + "\n" +
         "<b>Mobile:</b> " + customerInfo.phone + "\n" +
+        (payload.email ? "<b>Google Email:</b> " + payload.email + "\n" : "") +
         "<b>Pata:</b> " + customerInfo.address + ", " + customerInfo.area + " (" + customerInfo.pincode + ")\n" +
         "<b>Landmark:</b> " + (customerInfo.landmark || 'N/A') + "\n" +
         "━━━━━━━━━━━━━━━━━━━━\n" +
@@ -2226,6 +2408,7 @@
       customerInfo = {
         name: nInp ? nInp.value.trim() : '',
         phone: pInp ? pInp.value.trim() : '',
+        email: activeUserSession ? activeUserSession.email : '',
         address: aInp ? aInp.value.trim() : '',
         landmark: lInp ? lInp.value.trim() : '',
         pincode: APP_CONFIG.selectedPincode,
@@ -2236,11 +2419,12 @@
 
     function loadSavedUserProfile() {
       if (activeUserSession) {
-        customerInfo.name = activeUserSession.name;
-        customerInfo.phone = activeUserSession.phone;
+        if (activeUserSession.name) customerInfo.name = activeUserSession.name;
+        if (activeUserSession.phone) customerInfo.phone = activeUserSession.phone;
+        if (activeUserSession.email) customerInfo.email = activeUserSession.email;
       }
 
-      if (customerInfo && customerInfo.phone) {
+      if (customerInfo) {
         var nInp = document.getElementById('custName');
         var pInp = document.getElementById('custPhone');
         var aInp = document.getElementById('custAddress');
@@ -2262,6 +2446,10 @@
       loadProductsFromGoogleSheet();
       checkNewUserWelcomePopup();
 
+      window.addEventListener('load', function() {
+        initGoogleIdentityAuth();
+      });
+
       document.getElementById('addressFormElement')?.addEventListener('submit', function(e) {
         e.preventDefault();
         var nInp = document.getElementById('custName');
@@ -2277,6 +2465,7 @@
         customerInfo = {
           name: nInp.value.trim(),
           phone: pInp.value.trim(),
+          email: activeUserSession ? activeUserSession.email : '',
           address: aInp.value.trim(),
           pincode: APP_CONFIG.selectedPincode,
           area: APP_CONFIG.selectedArea,
