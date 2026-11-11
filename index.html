@@ -531,13 +531,9 @@
 
       <!-- Step A: Google Sign-In + Enter Phone & Name -->
       <div id="authStepPhone" class="p-4 space-y-3">
-        
-        <!-- GOOGLE SIGN-IN SECTION -->
         <div class="space-y-2">
-          <!-- Official Google Button Container -->
           <div id="googleSignInButtonContainer" class="flex justify-center w-full"></div>
 
-          <!-- Custom Fallback / One-Tap Trigger Button -->
           <button type="button" onclick="window.triggerGoogleSignIn()" class="w-full bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 py-2.5 px-3 rounded-xl font-bold text-xs shadow-xs flex items-center justify-center gap-2.5 active:scale-95 transition">
             <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
@@ -884,7 +880,6 @@
   <!-- JAVASCRIPT APPLICATION CORE -->
   <script>
     var APP_CONFIG = {
-      /* Replace with your OAuth 2.0 Client ID from Google Cloud Console */
       googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
       telegramToken: '9113283367:AAEl-UDmxFs2WG6Z9AI8LCoCh3H3_WnMCno',
       telegramChatId: '8214642524',
@@ -914,15 +909,11 @@
     var latestOrder = null;
     var appliedPromoCode = null;
 
-    /* AUTHENTICATION ENGINE STATE */
     var activeUserSession = null;
     var generatedOtpCode = null;
     var pendingAuthPhone = null;
     var pendingAuthName = null;
 
-    /* ========================================================
-       GOOGLE IDENTITY SERVICES (GIS) + JWT DECODER ENGINE
-       ======================================================== */
     function decodeGoogleJwt(token) {
       try {
         var base64Url = token.split('.')[1];
@@ -1035,7 +1026,6 @@
       }
     };
 
-    /* PWA AUTO SERVICE-WORKER SETUP */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         var swCode = "self.addEventListener('install', function(e) { self.skipWaiting(); });" +
@@ -1069,14 +1059,12 @@
       }
     };
 
-    /* AUTOMATIC BROKEN IMAGE RESCUE */
     window.addEventListener('error', function(e) {
       if (e.target && e.target.tagName === 'IMG') {
         e.target.src = 'https://placehold.co/400x300/9c1261/ffffff?text=MithilaMart';
       }
     }, true);
 
-    /* ULTRA-FAST CDN RESOLVER */
     function getOptimizedCdnUrl() {
       var url = arguments[0];
       var width = arguments[1] || 320;
@@ -1096,7 +1084,6 @@
       return 'https://wsrv.nl/?url=' + encodeURIComponent(clean) + '&w=' + width + '&q=80&output=webp';
     }
 
-    /* AUDIO CHIME BUZZER */
     function playStoreAudio() {
       var type = arguments[0] || 'add';
       try {
@@ -1135,7 +1122,6 @@
       } catch (e) {}
     }
 
-    /* TELEGRAM BOT NOTIFICATION SENDER */
     function sendTelegramAlert() {
       var htmlText = arguments[0];
       if (!APP_CONFIG.telegramToken || !APP_CONFIG.telegramChatId) return;
@@ -1151,9 +1137,6 @@
       }).catch(function() {});
     }
 
-    /* ========================================================
-       WHATSAPP OTP + PROFILE MODAL MANAGEMENT
-       ======================================================== */
     window.openLoginModal = function() {
       var modal = document.getElementById('authLoginModal');
       var stepPhone = document.getElementById('authStepPhone');
