@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MithilaMart Admin Console</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
+  <div class="max-w-5xl mx-auto space-y-4">
+    <div class="flex items-center justify-between bg-[#9c1261] text-white p-4 rounded-2xl shadow">
+      <div>
+        <h1 class="text-lg font-black">MithilaMart Admin Console</h1>
+        <p class="text-xs text-pink-200" id="adminUserStatus">Sign In Required</p>
+      </div>
+      <button id="adminAuthBtn" class="bg-white text-[#9c1261] px-3 py-1.5 rounded-xl font-bold text-xs">Login with Google</button>
+    </div>
+
+    <div id="adminPanel" class="hidden space-y-4">
+      <div class="flex gap-2">
+        <input type="text" id="adminSearchQuery" placeholder="Search by Phone or Order ID..." class="flex-1 border p-2 rounded-xl text-xs" />
+        <button id="btnReloadOrders" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold">Refresh Orders</button>
+      </div>
+
+      <div class="bg-white rounded-2xl border shadow-sm overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b text-slate-600">
+            <tr>
+              <th class="p-3">Order ID</th>
+              <th class="p-3">Customer</th>
+              <th class="p-3">Amount</th>
+              <th class="p-3">UTR</th>
+              <th class="p-3">Payment</th>
+              <th class="p-3">Order Status</th>
+              <th class="p-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const APP_CONFIG = {
+      firebaseConfig: {
+        apiKey: "AIzaSyAs-DEMO-FIREBASE-KEY",
+        authDomain: "mithilamart-shop.firebaseapp.com",
+        projectId: "mithilamart-shop",
+        storageBucket: "mithilamart-shop.appspot.com",
+        messagingSenderId: "1234567890",
+        appId: "1:1234567890:web:abcdef"
+      },
+      backendApiUrl: "YOUR_APPS_SCRIPT_DEPLOYMENT_EXEC_URL"
+    };
+
+    firebase.initializeApp(APP_CONFIG.firebaseConfig);
+    const auth = firebase.auth();
+    let allOrders = [];
+
+    document.getElementById('adminAuthBtn').addEventListener('click', () => {
+      if (auth.currentUser) {
+        auth.signOut();
+      } else {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider);
+      }
+    });
+
+    auth.onAuthStateChanged(user => {
+      const status = document.getElementById('adminUserStatus');
+      const btn = document.getElementById('adminAuthBtn');
+      const panel = document.getElementById('adminPanel');
+
+      if (user) {
+        status.textContent = `Logged in: ${user.email}`;
+        btn.textContent = "Logout";
+        panel.classList.remove('hidden');
+        loadAdminOrders();
+      } else {
+        status.textContent = "Sign In Required";
+        btn.textContent = "Login with Google";
+        panel.classList.add('hidden');
+      }
+    });
+
+    async function loadAdminOrders() {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch(APP_CONFIG.backendApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'adminListOrders', idToken: token })
+      });
+      const data = await res.json();
+      if (data.success) {
+        allOrders = data.orders;
+        renderAdminTable(allOrders);
+      } else {
+        alert(data.error);
+      }
+    }
+
+    function renderAdminTable(list) {
+      const tbody = document.getElementById('ordersTableBody');
+      tbody.innerHTML = '';
+      list.forEach(ord => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="p-3 font-bold font-mono">${ord.orderId}</td>
+          <td class="p-3"><strong>${ord.name}</strong><br><span class="text-slate-500">${ord.phone}</span></td>
+          <td class="p-3 font-bold">₹${ord.amount}</td>
+          <td class="p-3 font-mono text-[11px]">${ord.utr}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${ord.paymentStatus.includes('Verified') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${ord.paymentStatus}</span></td>
+          <td class="p-3">
+            <select class="border p-1 rounded text-xs" onchange="updateStatus('${ord.orderId}', this.value)">
+              <option value="Placed" ${ord.status==='Placed'?'selected':''}>Placed</option>
+              <option value="Packed" ${ord.status==='Packed'?'selected':''}>Packed</option>
+              <option value="Dispatched" ${ord.status==='Dispatched'?'selected':''}>Dispatched</option>
+              <option value="Delivered" ${ord.status==='Delivered'?'selected':''}>Delivered</option>
+              <option value="Cancelled" ${ord.status==='Cancelled'?'selected':''}>Cancelled</option>
+            </select>
+          </td>
+          <td class="p-3">
+            ${ord.method === 'ONLINE' && !ord.paymentStatus.includes('Verified') ? `<button onclick="verifyPayment('${ord.orderId}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold">Verify UTR</button>` : '—'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.updateStatus = async function(orderId, status) {
+      const token = await auth.currentUser.getIdToken();
+      await fetch(APP_CONFIG.backendApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'adminUpdateStatus', idToken: token, orderId, status })
+      });
+      loadAdminOrders();
+    };
+
+    window.verifyPayment = async function(orderId) {
+      const token = await auth.currentUser.getIdToken();
+      await fetch(APP_CONFIG.backendApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'adminVerifyPayment', idToken: token, orderId })
+      });
+      loadAdminOrders();
+    };
+
+    document.getElementById('btnReloadOrders').addEventListener('click', loadAdminOrders);
+  </script>
+</body>
+</html>
