@@ -271,11 +271,13 @@
       merchantUpi: "6205005743@ptyes",
       merchantName: "Bebi Chaudhary",
       firebaseConfig: {
-        apiKey: "YOUR_FIREBASE_WEB_API_KEY",
+        apiKey: "AIzaSyD_Sk1LGdAT0OVmT1bdcxGn28Ib01I3SD8",
         authDomain: "mithilamart-shop.firebaseapp.com",
         projectId: "mithilamart-shop",
-        storageBucket: "mithilamart-shop.appspot.com",
-        appId: "1:000000000000:web:mithilamart"
+        storageBucket: "mithilamart-shop.firebasestorage.app",
+        messagingSenderId: "226003654249",
+        appId: "1:226003654249:web:107cf8799472969dea34f8",
+        measurementId: "G-WHYW97YF9N"
       }
     };
 
@@ -329,9 +331,11 @@
           allProducts = data.products;
           renderCategories();
           renderCatalog();
+        } else {
+          throw new Error(data.error || 'Catalog empty');
         }
       } catch (err) {
-        document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-8">Catalog load nahi ho paya. Internet check karein.</p>';
+        document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-8">Catalog load nahi ho paya. Google Sheet me "Products" tab check karein.</p>';
       }
     }
 
