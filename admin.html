@@ -1,158 +1,157 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MithilaMart Admin Console</title>
+  <title>MithilaMart Owner Admin | Supaul</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 </head>
-<body class="bg-slate-100 text-slate-800 p-4 md:p-8">
-  <div class="max-w-5xl mx-auto space-y-4">
-    <div class="flex items-center justify-between bg-[#9c1261] text-white p-4 rounded-2xl shadow">
+<body class="bg-slate-100 text-slate-800 min-h-screen">
+
+  <header class="bg-slate-900 text-white px-4 py-3.5 shadow flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-shield-halved text-amber-400 text-xl"></i>
       <div>
-        <h1 class="text-lg font-black">MithilaMart Admin Console</h1>
-        <p class="text-xs text-pink-200" id="adminUserStatus">Sign In Required</p>
-      </div>
-      <button id="adminAuthBtn" class="bg-white text-[#9c1261] px-3 py-1.5 rounded-xl font-bold text-xs">Login with Google</button>
-    </div>
-
-    <div id="adminPanel" class="hidden space-y-4">
-      <div class="flex gap-2">
-        <input type="text" id="adminSearchQuery" placeholder="Search by Phone or Order ID..." class="flex-1 border p-2 rounded-xl text-xs" />
-        <button id="btnReloadOrders" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-bold">Refresh Orders</button>
-      </div>
-
-      <div class="bg-white rounded-2xl border shadow-sm overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-50 border-b text-slate-600">
-            <tr>
-              <th class="p-3">Order ID</th>
-              <th class="p-3">Customer</th>
-              <th class="p-3">Amount</th>
-              <th class="p-3">UTR</th>
-              <th class="p-3">Payment</th>
-              <th class="p-3">Order Status</th>
-              <th class="p-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTableBody" class="divide-y divide-slate-100"></tbody>
-        </table>
+        <h1 class="font-extrabold text-base">MithilaMart Owner Panel</h1>
+        <p class="text-[11px] text-slate-400">Live Order & UPI Verification</p>
       </div>
     </div>
-  </div>
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="text-xs bg-slate-800 px-3 py-1.5 rounded-lg font-bold">Storefront</a>
+      <button id="adminLogoutBtn" onclick="auth.signOut()" class="hidden text-xs bg-rose-600 px-3 py-1.5 rounded-lg font-bold">Logout</button>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-4">
+    <!-- Login Screen -->
+    <div id="adminLoginBox" class="max-w-sm mx-auto mt-16 bg-white p-6 rounded-3xl shadow-lg text-center space-y-4">
+      <div class="w-14 h-14 rounded-2xl bg-pink-100 text-[#9c1261] flex items-center justify-center mx-auto text-2xl">
+        <i class="fa-solid fa-user-lock"></i>
+      </div>
+      <h2 class="font-extrabold text-lg">Owner Verification</h2>
+      <p class="text-xs text-slate-500">Sirf authorized admin email (<b>RahulJaiswal6205@gmail.com</b>) se hi access milega.</p>
+      <button onclick="adminGoogleLogin()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" /> Sign in with Google
+      </button>
+    </div>
+
+    <!-- Orders Dashboard -->
+    <div id="adminDashboard" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-base">Live Customer Orders</h2>
+        <button onclick="loadAdminOrders()" class="bg-indigo-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow">
+          <i class="fa-solid fa-rotate mr-1"></i>Refresh Orders
+        </button>
+      </div>
+      <div id="adminOrdersList" class="space-y-3"></div>
+    </div>
+  </main>
 
   <script>
-    const APP_CONFIG = {
+    const ADMIN_CONFIG = {
+      backendApiUrl: "https://script.google.com/macros/s/AKfycbylRj3UWoF9Nr9fbJqrGHweFVZdm6TGBt9dUWtg5C9F1pzr-rv-70FvDP3E3QCey35/exec",
       firebaseConfig: {
-        apiKey: "AIzaSyAs-DEMO-FIREBASE-KEY",
+        apiKey: "YOUR_FIREBASE_WEB_API_KEY",
         authDomain: "mithilamart-shop.firebaseapp.com",
         projectId: "mithilamart-shop",
         storageBucket: "mithilamart-shop.appspot.com",
-        messagingSenderId: "1234567890",
-        appId: "1:1234567890:web:abcdef"
-      },
-      backendApiUrl: "YOUR_APPS_SCRIPT_DEPLOYMENT_EXEC_URL"
+        appId: "1:000000000000:web:mithilamart"
+      }
     };
 
-    firebase.initializeApp(APP_CONFIG.firebaseConfig);
+    firebase.initializeApp(ADMIN_CONFIG.firebaseConfig);
     const auth = firebase.auth();
-    let allOrders = [];
-
-    document.getElementById('adminAuthBtn').addEventListener('click', () => {
-      if (auth.currentUser) {
-        auth.signOut();
-      } else {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider);
-      }
-    });
+    let adminUser = null;
 
     auth.onAuthStateChanged(user => {
-      const status = document.getElementById('adminUserStatus');
-      const btn = document.getElementById('adminAuthBtn');
-      const panel = document.getElementById('adminPanel');
-
-      if (user) {
-        status.textContent = `Logged in: ${user.email}`;
-        btn.textContent = "Logout";
-        panel.classList.remove('hidden');
-        loadAdminOrders();
-      } else {
-        status.textContent = "Sign In Required";
-        btn.textContent = "Login with Google";
-        panel.classList.add('hidden');
-      }
+      adminUser = user;
+      document.getElementById('adminLoginBox').classList.toggle('hidden', !!user);
+      document.getElementById('adminDashboard').classList.toggle('hidden', !user);
+      document.getElementById('adminLogoutBtn').classList.toggle('hidden', !user);
+      if (user) loadAdminOrders();
     });
 
+    function adminGoogleLogin() {
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => alert(e.message));
+    }
+
     async function loadAdminOrders() {
-      const token = await auth.currentUser.getIdToken();
-      const res = await fetch(APP_CONFIG.backendApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'adminListOrders', idToken: token })
-      });
-      const data = await res.json();
-      if (data.success) {
-        allOrders = data.orders;
-        renderAdminTable(allOrders);
-      } else {
-        alert(data.error);
+      const box = document.getElementById('adminOrdersList');
+      box.innerHTML = '<p class="text-center text-xs text-slate-400 py-10">Orders fetch ho rahe hain...</p>';
+      try {
+        const idToken = await adminUser.getIdToken();
+        const res = await fetch(ADMIN_CONFIG.backendApiUrl, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'adminListOrders', idToken })
+        });
+        const data = await res.json();
+        if (!data.success) {
+          box.innerHTML = `<div class="bg-rose-50 text-rose-600 p-4 rounded-2xl text-xs font-bold">${data.error}</div>`;
+          return;
+        }
+        if (!data.orders.length) {
+          box.innerHTML = '<div class="bg-white p-8 rounded-2xl text-center text-xs text-slate-400">Abhi tak koi order nahi aaya hai.</div>';
+          return;
+        }
+        box.innerHTML = data.orders.map(o => `
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+            <div class="flex flex-wrap justify-between items-start gap-2">
+              <div>
+                <span class="bg-pink-100 text-[#9c1261] font-extrabold text-xs px-2.5 py-0.5 rounded">${o.orderId}</span>
+                <h3 class="font-extrabold text-sm mt-1">${o.name} • <a href="tel:${o.phone}" class="text-indigo-600 underline">${o.phone}</a></h3>
+                <p class="text-xs text-slate-500">${o.address}</p>
+              </div>
+              <div class="text-right">
+                <p class="font-extrabold text-base text-slate-900">₹${o.amount}</p>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-100">${o.method} • ${o.paymentStatus}</span>
+                ${o.utr && o.utr !== 'N/A' ? `<p class="text-xs font-extrabold text-indigo-600 mt-1">UTR: ${o.utr}</p>` : ''}
+              </div>
+            </div>
+
+            <div class="bg-slate-50 p-2.5 rounded-xl text-xs space-y-1">
+              ${o.items.map(i => `<p>• <b>${i.quantity}x</b> ${i.name} — ₹${i.price * i.quantity}</p>`).join('')}
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+              <div class="flex items-center gap-2">
+                <select onchange="updateOrderStatus('${o.orderId}', this.value)" class="text-xs font-bold border border-slate-300 rounded-lg px-2.5 py-1.5 bg-white">
+                  ${['Placed', 'Confirmed', 'Packed', 'Dispatched', 'Delivered', 'Cancelled'].map(st => `<option value="${st}" ${o.status === st ? 'selected' : ''}>${st}</option>`).join('')}
+                </select>
+              </div>
+              ${o.method === 'ONLINE' && o.paymentStatus !== 'Payment Verified (Audit Done)' ? `
+                <button onclick="verifyUpiPayment('${o.orderId}')" class="bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+                  <i class="fa-solid fa-check-double mr-1"></i>Verify UPI UTR
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        box.innerHTML = '<p class="text-center text-xs text-rose-500">Server error.</p>';
       }
     }
 
-    function renderAdminTable(list) {
-      const tbody = document.getElementById('ordersTableBody');
-      tbody.innerHTML = '';
-      list.forEach(ord => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50";
-        tr.innerHTML = `
-          <td class="p-3 font-bold font-mono">${ord.orderId}</td>
-          <td class="p-3"><strong>${ord.name}</strong><br><span class="text-slate-500">${ord.phone}</span></td>
-          <td class="p-3 font-bold">₹${ord.amount}</td>
-          <td class="p-3 font-mono text-[11px]">${ord.utr}</td>
-          <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${ord.paymentStatus.includes('Verified') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${ord.paymentStatus}</span></td>
-          <td class="p-3">
-            <select class="border p-1 rounded text-xs" onchange="updateStatus('${ord.orderId}', this.value)">
-              <option value="Placed" ${ord.status==='Placed'?'selected':''}>Placed</option>
-              <option value="Packed" ${ord.status==='Packed'?'selected':''}>Packed</option>
-              <option value="Dispatched" ${ord.status==='Dispatched'?'selected':''}>Dispatched</option>
-              <option value="Delivered" ${ord.status==='Delivered'?'selected':''}>Delivered</option>
-              <option value="Cancelled" ${ord.status==='Cancelled'?'selected':''}>Cancelled</option>
-            </select>
-          </td>
-          <td class="p-3">
-            ${ord.method === 'ONLINE' && !ord.paymentStatus.includes('Verified') ? `<button onclick="verifyPayment('${ord.orderId}')" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold">Verify UTR</button>` : '—'}
-          </td>
-        `;
-        tbody.appendChild(tr);
+    async function updateOrderStatus(orderId, status) {
+      const idToken = await adminUser.getIdToken();
+      await fetch(ADMIN_CONFIG.backendApiUrl, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'adminUpdateStatus', idToken, orderId, status })
       });
+      alert('Status updated to: ' + status);
     }
 
-    window.updateStatus = async function(orderId, status) {
-      const token = await auth.currentUser.getIdToken();
-      await fetch(APP_CONFIG.backendApiUrl, {
+    async function verifyUpiPayment(orderId) {
+      const idToken = await adminUser.getIdToken();
+      await fetch(ADMIN_CONFIG.backendApiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'adminUpdateStatus', idToken: token, orderId, status })
+        body: JSON.stringify({ action: 'adminVerifyPayment', idToken, orderId })
       });
+      alert('Payment Verified!');
       loadAdminOrders();
-    };
-
-    window.verifyPayment = async function(orderId) {
-      const token = await auth.currentUser.getIdToken();
-      await fetch(APP_CONFIG.backendApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'adminVerifyPayment', idToken: token, orderId })
-      });
-      loadAdminOrders();
-    };
-
-    document.getElementById('btnReloadOrders').addEventListener('click', loadAdminOrders);
+    }
   </script>
 </body>
 </html>
