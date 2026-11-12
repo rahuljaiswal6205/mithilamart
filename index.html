@@ -55,7 +55,6 @@
 
     <!-- TAB 1: BAZAAR -->
     <section id="tab-bazaar" class="space-y-4">
-      <!-- Promo Banner -->
       <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-4 text-white shadow-md flex items-center justify-between">
         <div>
           <span class="bg-white/20 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">Supaul Express Delivery</span>
@@ -65,10 +64,8 @@
         <div class="text-3xl opacity-90"><i class="fa-solid fa-truck-fast"></i></div>
       </div>
 
-      <!-- Category Pills -->
       <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
 
-      <!-- Product Grid -->
       <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div class="col-span-full text-center py-12 text-slate-400">
           <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#9c1261] mb-2"></i>
@@ -76,7 +73,6 @@
         </div>
       </div>
 
-      <!-- Founder & Support Footer -->
       <div class="mt-8 bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center space-y-2">
         <p class="text-xs font-bold text-slate-700">MithilaMart • Choudhary General Stores, Supaul (852131)</p>
         <p class="text-[11px] text-slate-500">Founder & CEO: <b>Rahul Jaiswal</b> | Helpline: <a href="tel:917484005743" class="text-[#9c1261] font-bold">7484005743</a></p>
@@ -87,15 +83,12 @@
       </div>
     </section>
 
-    <!-- TAB 2: BAG (CART & CHECKOUT) -->
+    <!-- TAB 2: BAG -->
     <section id="tab-bag" class="hidden space-y-4">
       <h2 class="font-extrabold text-lg text-slate-800"><i class="fa-solid fa-bag-shopping text-[#9c1261] mr-2"></i>Aapka Shopping Bag</h2>
-
       <div id="cartItemsList" class="space-y-2.5"></div>
 
-      <!-- Checkout Box -->
       <div id="checkoutBox" class="hidden space-y-4">
-        <!-- Coupon -->
         <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm">
           <label class="text-xs font-bold text-slate-600 block mb-1.5">Promo Coupon Code</label>
           <div class="flex gap-2">
@@ -105,7 +98,6 @@
           <p id="couponMsg" class="text-xs mt-1.5 font-semibold"></p>
         </div>
 
-        <!-- Bill Summary -->
         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2 text-sm">
           <div class="flex justify-between text-slate-600"><span>Item Subtotal</span><span id="billSubtotal" class="font-bold">₹0</span></div>
           <div class="flex justify-between text-emerald-600"><span>Coupon Discount</span><span id="billDiscount" class="font-bold">-₹0</span></div>
@@ -115,7 +107,6 @@
           <div class="flex justify-between text-base font-extrabold text-slate-900"><span>Total Payable</span><span id="billTotal" class="text-[#9c1261]">₹0</span></div>
         </div>
 
-        <!-- Customer Address -->
         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
           <h3 class="font-bold text-sm text-slate-800">Delivery Details (Supaul 852131)</h3>
           <input type="text" id="custName" placeholder="Pura Naam *" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
@@ -127,7 +118,6 @@
           </div>
         </div>
 
-        <!-- Payment Method -->
         <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
           <h3 class="font-bold text-sm text-slate-800">Payment Mode Chunein</h3>
           <div class="grid grid-cols-2 gap-2.5">
@@ -141,7 +131,6 @@
             </button>
           </div>
 
-          <!-- UPI Box -->
           <div id="upiDetailsBox" class="hidden bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5 text-center">
             <p class="text-xs font-bold text-slate-700">Merchant: <span class="text-[#9c1261]">Bebi Chaudhary</span></p>
             <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center justify-between">
@@ -204,7 +193,7 @@
   </nav>
 
   <!-- Firebase Login Modal -->
-  <div id="authModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <div id="authModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
       <div class="flex justify-between items-center">
         <h3 class="font-extrabold text-base text-slate-800">MithilaMart Account</h3>
@@ -267,7 +256,7 @@
 
   <script>
     const APP_CONFIG = {
-      backendApiUrl: "https://script.google.com/macros/s/AKfycbylRj3UWoF9Nr9fbJqrGHweFVZdm6TGBt9dUWtg5C9F1pzr-rv-70FvDP3E3QCey35/exec",
+      backendApiUrl: "PASTE_YOUR_EXACT_EXEC_URL_HERE",
       merchantUpi: "6205005743@ptyes",
       merchantName: "Bebi Chaudhary",
       firebaseConfig: {
@@ -335,7 +324,7 @@
           throw new Error(data.error || 'Catalog empty');
         }
       } catch (err) {
-        document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-8">Catalog load nahi ho paya. Google Sheet me "Products" tab check karein.</p>';
+        document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-8">Catalog load error: ' + err.message + '</p>';
       }
     }
 
@@ -701,7 +690,6 @@
 
     function logoutUser() { auth.signOut().then(() => closeAuthModal()); }
 
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
     saveCart();
     loadCatalog();
   </script>
