@@ -1,519 +1,538 @@
 <!DOCTYPE html>
-<html lang="hi" class="h-full">
+<html lang="hi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>MithilaMart — Supaul Ka Apna Online Bazaar</title>
-
-  <!-- Security Policies -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data: blob:; connect-src 'self' https:; font-src 'self' https: data:;" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MithilaMart | Apno ka Apna Store - Supaul</title>
   <meta name="theme-color" content="#9c1261" />
-
-  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
-
-  <!-- Tailwind CSS & FontAwesome -->
+  <link rel="icon" type="image/png" href="logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- Local QR Code Library (Zero External API Leaks) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <!-- Firebase Compat SDK v9.23.0 -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; min-height: 100vh; }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 pb-24 antialiased select-none">
+<body class="pb-24 text-slate-800">
 
-  <!-- TOP BANNER -->
-  <div class="bg-gradient-to-r from-red-600 via-orange-600 to-amber-500 text-white text-[11px] font-bold py-1.5 px-3 flex items-center justify-between shadow sticky top-0 z-50">
-    <div class="flex items-center gap-1.5 truncate">
-      <span class="bg-yellow-300 text-red-800 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">Offer</span>
-      <span class="truncate">Save ₹50 on ₹200+ (RAHUL50) | Free Supaul Delivery</span>
-    </div>
-    <div class="flex items-center gap-1 font-mono text-[10px] bg-black/40 px-2 py-0.5 rounded shrink-0">
-      <i class="fa-solid fa-bolt text-yellow-300"></i>
-      <span>Supaul Sadar</span>
-    </div>
-  </div>
-
-  <!-- STICKY HEADER -->
-  <header class="bg-[#9c1261] text-white sticky top-[29px] z-40 shadow-lg border-b border-pink-700/50">
-    <div class="max-w-md mx-auto px-3 py-2 flex items-center justify-between gap-2">
-      <div id="brandLogoHome" class="flex items-center gap-2 cursor-pointer active:opacity-80">
-        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md border-2 border-amber-300 shrink-0 overflow-hidden">
-          <img src="logo.png" alt="MithilaMart" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x100/9c1261/ffffff?text=MM'" />
-        </div>
-        <div class="leading-tight">
-          <span class="font-black text-lg tracking-tight text-white">Mithila<span class="text-amber-300">Mart</span></span>
-          <p class="text-[9px] text-pink-200 font-semibold tracking-wider uppercase -mt-0.5">Supaul's Online Bazaar</p>
+  <!-- Top Sticky Header -->
+  <header class="sticky top-0 z-40 bg-gradient-to-r from-[#880e4f] via-[#ad1457] to-[#c2185b] text-white shadow-lg">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <img src="logo.png" onerror="this.src='https://placehold.co/80x80/ffffff/9c1261?text=MM'" alt="MithilaMart" class="w-10 h-10 rounded-xl bg-white p-0.5 object-contain shadow" />
+        <div>
+          <h1 class="font-extrabold text-lg leading-tight tracking-tight">MithilaMart</h1>
+          <p class="text-[11px] text-pink-100 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> Supaul Sadar Hub (852131)</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button id="headerAuthBtn" class="bg-white/15 border border-pink-300/40 text-white font-bold rounded-full px-2.5 py-1 text-[11px] flex items-center gap-1.5 shadow">
-          <i class="fa-regular fa-user text-amber-300"></i>
-          <span id="headerAuthText">Login</span>
+        <button id="installBtn" onclick="installPWA()" class="hidden bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg backdrop-blur-sm">
+          <i class="fa-solid fa-download mr-1"></i>App
         </button>
-
-        <button id="headerWishlistBtn" class="relative p-1 text-white" aria-label="Wishlist">
-          <i class="fa-regular fa-heart text-base"></i>
-          <span id="wishlistCountBadge" class="hidden absolute top-0 right-0 bg-amber-400 text-[#9c1261] font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
-        </button>
-
-        <button id="headerCartBtn" class="relative p-1 text-white" aria-label="Cart">
-          <i class="fa-solid fa-bag-shopping text-base"></i>
-          <span id="cartCountBadge" class="hidden absolute top-0 right-0 bg-yellow-300 text-[#9c1261] font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center shadow">0</span>
+        <button id="authHeaderBtn" onclick="openAuthModal()" class="bg-white text-[#9c1261] text-xs font-extrabold px-3 py-2 rounded-xl shadow flex items-center gap-1.5">
+          <i class="fa-solid fa-user-shield"></i> <span id="authHeaderText">Login</span>
         </button>
       </div>
     </div>
 
-    <!-- Search Input -->
-    <div class="max-w-md mx-auto px-3 pb-2.5">
-      <div class="relative flex items-center">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 text-slate-400 text-xs"></i>
-        <input type="text" id="storeSearchInput" placeholder="Search groceries, diya, pooja items..." class="w-full bg-white text-slate-900 placeholder-slate-400 text-xs rounded-xl pl-9 pr-3 py-2.5 outline-none focus:ring-2 focus:ring-amber-400 shadow-sm" />
+    <!-- Search Bar -->
+    <div class="max-w-3xl mx-auto px-4 pb-3">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input type="text" id="searchInput" oninput="renderCatalog()" placeholder="Diye, Puja samagri, Snacks, Grocery search karein..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white text-slate-800 text-sm font-medium focus:outline-none shadow-inner" />
       </div>
     </div>
   </header>
 
-  <!-- VIEWPORT TABS -->
-  <main class="w-full max-w-md mx-auto px-3 pt-3 space-y-3.5">
+  <!-- Main Content Area -->
+  <main class="max-w-3xl mx-auto px-4 pt-4">
 
-    <!-- TAB 1: BAZAAR (CATALOG) -->
-    <div id="tabCatalog" class="space-y-3">
-      <div id="categoryContainer" class="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1 text-xs font-bold">
-        <button data-cat="All" class="cat-chip px-3 py-1.5 rounded-xl bg-[#9c1261] text-white border border-[#9c1261]">All Items</button>
+    <!-- TAB 1: BAZAAR -->
+    <section id="tab-bazaar" class="space-y-4">
+      <!-- Promo Banner -->
+      <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-4 text-white shadow-md flex items-center justify-between">
+        <div>
+          <span class="bg-white/20 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">Supaul Express Delivery</span>
+          <h2 class="font-extrabold text-base mt-1">Free Delivery ₹199+ par!</h2>
+          <p class="text-xs text-amber-100 mt-0.5">Code <b class="bg-black/20 px-1.5 py-0.5 rounded">RAHUL50</b> lagayein & ₹50 bachayein</p>
+        </div>
+        <div class="text-3xl opacity-90"><i class="fa-solid fa-truck-fast"></i></div>
       </div>
 
-      <div class="flex items-center justify-between text-xs font-bold text-slate-700 px-0.5">
-        <span id="catalogStatusTitle">Available Products</span>
-        <span id="catalogCount" class="text-[11px] text-slate-500 font-semibold">Loading items...</span>
+      <!-- Category Pills -->
+      <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
+
+      <!-- Product Grid -->
+      <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div class="col-span-full text-center py-12 text-slate-400">
+          <i class="fa-solid fa-circle-notch fa-spin text-2xl text-[#9c1261] mb-2"></i>
+          <p class="text-xs font-semibold">Live catalog load ho raha hai...</p>
+        </div>
       </div>
 
-      <div id="productsGrid" class="grid grid-cols-2 gap-2.5"></div>
-    </div>
+      <!-- Founder & Support Footer -->
+      <div class="mt-8 bg-white rounded-2xl p-4 border border-slate-100 shadow-sm text-center space-y-2">
+        <p class="text-xs font-bold text-slate-700">MithilaMart • Choudhary General Stores, Supaul (852131)</p>
+        <p class="text-[11px] text-slate-500">Founder & CEO: <b>Rahul Jaiswal</b> | Helpline: <a href="tel:917484005743" class="text-[#9c1261] font-bold">7484005743</a></p>
+        <div class="flex justify-center gap-3 pt-1">
+          <a href="https://wa.me/916205005743" target="_blank" class="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1.5 rounded-lg"><i class="fa-brands fa-whatsapp mr-1"></i>WhatsApp Support</a>
+          <a href="admin.html" class="text-xs bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-lg"><i class="fa-solid fa-lock mr-1"></i>Owner Panel</a>
+        </div>
+      </div>
+    </section>
 
-    <!-- TAB 2: CART & CHECKOUT -->
-    <div id="tabCart" class="hidden space-y-3">
-      <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-sm">
-        <h3 class="font-black text-sm text-slate-900 border-b pb-2 mb-2">MithilaMart Bag</h3>
-        <div id="cartItemsList" class="divide-y divide-slate-100 text-xs"></div>
+    <!-- TAB 2: BAG (CART & CHECKOUT) -->
+    <section id="tab-bag" class="hidden space-y-4">
+      <h2 class="font-extrabold text-lg text-slate-800"><i class="fa-solid fa-bag-shopping text-[#9c1261] mr-2"></i>Aapka Shopping Bag</h2>
 
-        <!-- Coupon Section -->
-        <div class="mt-3.5 p-3 bg-pink-50/60 border border-pink-200 rounded-xl space-y-2">
-          <div class="flex items-center justify-between text-xs font-bold text-slate-800">
-            <span>Apply Coupon</span>
-            <span class="text-[10px] text-[#9c1261]">RAHUL50 / DIWALI100</span>
-          </div>
+      <div id="cartItemsList" class="space-y-2.5"></div>
+
+      <!-- Checkout Box -->
+      <div id="checkoutBox" class="hidden space-y-4">
+        <!-- Coupon -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-100 shadow-sm">
+          <label class="text-xs font-bold text-slate-600 block mb-1.5">Promo Coupon Code</label>
           <div class="flex gap-2">
-            <input type="text" id="couponInput" placeholder="ENTER CODE" class="uppercase font-mono text-xs border rounded-xl px-3 py-2 flex-1 bg-white outline-none focus:border-[#9c1261]" />
-            <button id="applyCouponBtn" class="bg-[#9c1261] text-white text-xs px-3 py-2 rounded-xl font-bold">Apply</button>
+            <input type="text" id="couponInput" placeholder="RAHUL50 ya DIWALI100" class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-sm uppercase font-bold focus:outline-none focus:border-[#9c1261]" />
+            <button onclick="applyCoupon()" class="bg-slate-900 text-white text-xs font-bold px-4 rounded-xl">Apply</button>
           </div>
-          <p id="couponMsg" class="hidden text-[10px] font-bold text-center"></p>
+          <p id="couponMsg" class="text-xs mt-1.5 font-semibold"></p>
         </div>
 
-        <!-- Bill Calculations -->
-        <div class="mt-3.5 bg-slate-50 border rounded-xl p-3 text-xs space-y-1.5">
-          <div class="flex justify-between text-slate-600"><span>Subtotal:</span><span id="billSubtotal">₹0</span></div>
-          <div id="couponDiscountRow" class="hidden flex justify-between text-emerald-600 font-bold"><span>Discount:</span><span id="billDiscount">-₹0</span></div>
-          <div class="flex justify-between text-slate-600"><span>Delivery Fee:</span><span id="billDelivery">₹40</span></div>
-          <div class="flex justify-between font-black text-slate-900 pt-2 border-t text-sm"><span>Estimated Total:</span><span id="billTotal" class="text-[#9c1261]">₹0</span></div>
+        <!-- Bill Summary -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2 text-sm">
+          <div class="flex justify-between text-slate-600"><span>Item Subtotal</span><span id="billSubtotal" class="font-bold">₹0</span></div>
+          <div class="flex justify-between text-emerald-600"><span>Coupon Discount</span><span id="billDiscount" class="font-bold">-₹0</span></div>
+          <div class="flex justify-between text-slate-600"><span>Delivery Charge</span><span id="billDelivery" class="font-bold">₹40</span></div>
+          <div id="codFeeRow" class="hidden flex justify-between text-amber-600"><span>Small Order COD Fee</span><span id="billCodFee" class="font-bold">₹19</span></div>
+          <hr class="border-slate-100" />
+          <div class="flex justify-between text-base font-extrabold text-slate-900"><span>Total Payable</span><span id="billTotal" class="text-[#9c1261]">₹0</span></div>
         </div>
 
-        <button id="btnProceedToAddress" class="w-full mt-3 bg-[#9c1261] text-white py-3 rounded-xl font-bold text-xs shadow">Proceed to Delivery Address ➔</button>
-      </div>
-
-      <!-- Address Form -->
-      <div id="checkoutAddressSection" class="hidden bg-white rounded-2xl border p-3.5 shadow-sm text-xs space-y-2.5">
-        <h4 class="font-bold text-sm text-slate-900 border-b pb-1.5">Delivery Details (Supaul)</h4>
-        <div>
-          <label class="block font-semibold mb-1">Customer Name *</label>
-          <input type="text" id="custName" maxlength="50" class="w-full border rounded-xl p-2 outline-none focus:border-[#9c1261]" />
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">10-Digit Mobile Number *</label>
-          <input type="tel" id="custPhone" maxlength="10" class="w-full border rounded-xl p-2 outline-none focus:border-[#9c1261]" />
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">Delivery Address *</label>
-          <textarea id="custAddress" rows="2" maxlength="150" class="w-full border rounded-xl p-2 outline-none focus:border-[#9c1261]"></textarea>
-        </div>
-        <div>
-          <label class="block font-semibold mb-1">Nearest Landmark *</label>
-          <input type="text" id="custLandmark" maxlength="60" placeholder="Temple / Chowk / School" class="w-full border rounded-xl p-2 outline-none focus:border-[#9c1261]" />
-        </div>
-
-        <div class="pt-2 border-t space-y-2">
-          <label class="font-bold text-slate-800 block">Payment Mode</label>
+        <!-- Customer Address -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+          <h3 class="font-bold text-sm text-slate-800">Delivery Details (Supaul 852131)</h3>
+          <input type="text" id="custName" placeholder="Pura Naam *" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+          <input type="tel" id="custPhone" maxlength="10" placeholder="10-Digit Mobile Number *" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+          <textarea id="custAddress" rows="2" placeholder="Ghar ka Pata / Mohalla / Ward No. *" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
           <div class="grid grid-cols-2 gap-2">
-            <button type="button" data-pay="ONLINE" class="pay-method-btn border-2 border-[#9c1261] bg-pink-50 p-2.5 rounded-xl font-bold text-center">UPI QR (Pay Online)</button>
-            <button type="button" data-pay="COD" class="pay-method-btn border border-slate-300 p-2.5 rounded-xl font-bold text-center text-slate-600">Cash on Delivery</button>
+            <input type="text" id="custLandmark" placeholder="Landmark (Optional)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm" />
+            <input type="text" id="custPincode" value="852131" readonly class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-500 text-sm font-bold" />
           </div>
         </div>
 
-        <button id="btnPlaceOrderFinal" class="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold text-xs shadow">Place Verified Order</button>
+        <!-- Payment Method -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+          <h3 class="font-bold text-sm text-slate-800">Payment Mode Chunein</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" id="payBtnCod" onclick="selectPayment('COD')" class="p-3 rounded-xl border-2 border-[#9c1261] bg-pink-50 text-left">
+              <p class="font-extrabold text-xs text-[#9c1261]"><i class="fa-solid fa-money-bill-wave mr-1"></i>Cash on Delivery</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Saman milne par dein</p>
+            </button>
+            <button type="button" id="payBtnOnline" onclick="selectPayment('ONLINE')" class="p-3 rounded-xl border-2 border-slate-200 bg-white text-left">
+              <p class="font-extrabold text-xs text-slate-800"><i class="fa-solid fa-qrcode mr-1"></i>UPI / QR Pay</p>
+              <p class="text-[10px] text-slate-500 mt-0.5">Instant UPI + UTR</p>
+            </button>
+          </div>
+
+          <!-- UPI Box -->
+          <div id="upiDetailsBox" class="hidden bg-slate-50 p-3.5 rounded-xl border border-slate-200 space-y-2.5 text-center">
+            <p class="text-xs font-bold text-slate-700">Merchant: <span class="text-[#9c1261]">Bebi Chaudhary</span></p>
+            <div class="bg-white p-2 rounded-lg border border-slate-200 flex items-center justify-between">
+              <code class="text-xs font-extrabold text-slate-800">6205005743@ptyes</code>
+              <button type="button" onclick="copyUpi()" class="bg-[#9c1261] text-white text-[11px] font-bold px-2.5 py-1 rounded">Copy UPI</button>
+            </div>
+            <a id="upiDeepLink" href="#" class="block w-full bg-indigo-600 text-white text-xs font-bold py-2.5 rounded-xl shadow">
+              <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>PhonePe / GPay / Paytm se Pay Karein
+            </a>
+            <input type="text" id="utrInput" maxlength="12" placeholder="Payment ke baad 12-Digit UTR Number daalein *" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-center tracking-wider" />
+          </div>
+        </div>
+
+        <button id="placeOrderBtn" onclick="submitOrder()" class="w-full bg-gradient-to-r from-[#9c1261] to-[#c2185b] text-white font-extrabold py-3.5 rounded-2xl shadow-lg text-sm">
+          Confirm & Place Order <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
       </div>
-    </div>
+    </section>
 
     <!-- TAB 3: WISHLIST -->
-    <div id="tabWishlist" class="hidden space-y-3">
-      <h3 class="font-bold text-sm text-slate-900">Saved Wishlist Items</h3>
-      <div id="wishlistGrid" class="grid grid-cols-2 gap-2.5"></div>
-    </div>
+    <section id="tab-wishlist" class="hidden space-y-4">
+      <h2 class="font-extrabold text-lg text-slate-800"><i class="fa-solid fa-heart text-rose-500 mr-2"></i>Saved Wishlist</h2>
+      <div id="wishlistGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+    </section>
 
-    <!-- TAB 4: TRACKING -->
-    <div id="tabTrack" class="hidden space-y-3">
-      <div class="bg-white border rounded-2xl p-3.5 shadow-sm text-xs">
-        <h3 class="font-black text-slate-900 text-sm mb-1 flex items-center gap-1.5">
-          <i class="fa-solid fa-truck-fast text-[#9c1261]"></i> My Account Orders
-        </h3>
-        <p class="text-slate-500 text-[11px] mb-2.5">Orders fetched securely from server for your login ID.</p>
-        <button id="btnRefreshTracking" class="w-full bg-[#9c1261] text-white py-2 rounded-xl font-bold text-xs">Refresh Orders</button>
+    <!-- TAB 4: TRACK ORDERS -->
+    <section id="tab-track" class="hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="font-extrabold text-lg text-slate-800"><i class="fa-solid fa-box-open text-[#9c1261] mr-2"></i>Mere Orders</h2>
+        <button onclick="fetchMyOrders()" class="text-xs bg-slate-200 hover:bg-slate-300 font-bold px-3 py-1.5 rounded-lg">
+          <i class="fa-solid fa-rotate mr-1"></i>Refresh
+        </button>
       </div>
+      <div id="ordersList" class="space-y-3"></div>
+    </section>
 
-      <div id="trackingListContainer" class="space-y-2.5"></div>
-
-      <!-- Cancel / Return Box -->
-      <div class="bg-white border border-rose-200 rounded-2xl p-3.5 shadow-sm text-xs space-y-2">
-        <h4 class="font-black text-rose-900 text-xs flex items-center gap-1.5"><i class="fa-solid fa-rotate-left"></i> Cancel / Return Request</h4>
-        <div>
-          <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Order ID *</label>
-          <input type="text" id="cancelOrderId" placeholder="MM-XXXXXX" class="w-full border rounded-lg p-2 text-xs" />
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Action *</label>
-          <select id="cancelActionSelect" class="w-full border rounded-lg p-2 text-xs bg-white">
-            <option value="Direct Order Cancellation">Order Cancellation (Before Dispatch)</option>
-            <option value="Item Return / Refund">Item Return & Refund</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Reason *</label>
-          <textarea id="cancelReasonInput" rows="2" class="w-full border rounded-lg p-2 text-xs" placeholder="Vajah likhein..."></textarea>
-        </div>
-        <button id="btnSubmitCancelReturn" class="w-full bg-rose-600 text-white font-bold py-2 rounded-xl text-xs">Submit Request</button>
-      </div>
-    </div>
   </main>
 
-  <!-- AUTH MODAL -->
-  <div id="authModal" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-4 text-xs space-y-3 relative">
-      <button id="closeAuthModal" class="absolute top-3 right-3 text-slate-400 text-base">&times;</button>
-      <h3 class="font-black text-sm text-[#9c1261]">MithilaMart Account Login</h3>
-      <p class="text-[11px] text-slate-500">Sign in to place orders securely and track shipments.</p>
-
-      <button id="btnGoogleAuth" class="w-full border-2 border-slate-200 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50">
-        <i class="fa-brands fa-google text-red-500 text-base"></i>
-        <span>Continue with Google</span>
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-40 shadow-lg">
+    <div class="max-w-3xl mx-auto grid grid-cols-4 py-2 text-center">
+      <button onclick="switchTab('bazaar')" id="nav-bazaar" class="text-[#9c1261] flex flex-col items-center gap-0.5">
+        <i class="fa-solid fa-store text-lg"></i>
+        <span class="text-[11px] font-bold">Bazaar</span>
       </button>
-
-      <div class="text-center font-bold text-slate-400 text-[10px] uppercase">OR VIA MOBILE OTP</div>
-
-      <div id="phoneInputStep" class="space-y-2">
-        <div class="flex border rounded-xl overflow-hidden">
-          <span class="bg-slate-100 p-2 font-bold text-slate-600 border-r">+91</span>
-          <input type="tel" id="authPhone" maxlength="10" placeholder="Mobile Number" class="w-full p-2 outline-none font-bold" />
-        </div>
-        <div id="recaptchaContainer"></div>
-        <button id="btnSendSmsOtp" class="w-full bg-[#9c1261] text-white py-2.5 rounded-xl font-bold">Send SMS OTP</button>
-      </div>
-
-      <div id="otpVerifyStep" class="space-y-2 hidden">
-        <input type="text" id="authOtpCode" maxlength="6" placeholder="Enter 6-Digit OTP" class="w-full text-center font-mono font-bold tracking-widest border rounded-xl p-2" />
-        <button id="btnConfirmOtp" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold">Verify & Log In</button>
-      </div>
-
-      <p id="authErrorMsg" class="hidden text-rose-600 font-bold text-[10px] text-center"></p>
+      <button onclick="switchTab('bag')" id="nav-bag" class="text-slate-400 relative flex flex-col items-center gap-0.5">
+        <i class="fa-solid fa-bag-shopping text-lg"></i>
+        <span id="bagBadge" class="hidden absolute top-0 right-6 bg-[#9c1261] text-white text-[10px] font-extrabold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+        <span class="text-[11px] font-bold">Bag</span>
+      </button>
+      <button onclick="switchTab('wishlist')" id="nav-wishlist" class="text-slate-400 flex flex-col items-center gap-0.5">
+        <i class="fa-solid fa-heart text-lg"></i>
+        <span class="text-[11px] font-bold">Wishlist</span>
+      </button>
+      <button onclick="switchTab('track')" id="nav-track" class="text-slate-400 flex flex-col items-center gap-0.5">
+        <i class="fa-solid fa-truck-fast text-lg"></i>
+        <span class="text-[11px] font-bold">Track</span>
+      </button>
     </div>
-  </div>
-
-  <!-- UPI PAYMENT MODAL -->
-  <div id="upiModal" class="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded-2xl max-w-xs w-full p-4 text-center text-xs space-y-2.5">
-      <h4 class="font-bold text-sm text-slate-900">Scan & Pay via Merchant UPI</h4>
-      <div id="localQrCodeContainer" class="flex justify-center py-2"></div>
-      <p class="font-bold text-slate-700">UPI ID: <span class="font-mono text-[#9c1261]">6205005743@ptyes</span></p>
-      <div class="text-left space-y-1">
-        <label class="block font-bold text-[10px]">Enter 12-Digit Banking UTR Number *</label>
-        <input type="text" id="utrInputValue" maxlength="12" placeholder="e.g. 529182739102" class="w-full border-2 p-2 rounded-xl text-center font-mono font-bold" />
-      </div>
-      <p id="utrErrorText" class="hidden text-rose-600 text-[10px] font-bold">Valid 12-digit numeric reference required.</p>
-      <button id="btnSubmitUtrFinal" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl">Confirm & Submit UTR</button>
-      <button id="btnCloseUpiModal" class="w-full bg-slate-100 text-slate-600 font-bold py-1.5 rounded-xl">Cancel</button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t py-2 px-3 flex justify-around items-center z-40 text-[10px] font-semibold">
-    <button data-tab="tabCatalog" class="nav-tab-btn flex flex-col items-center text-[#9c1261]"><i class="fa-solid fa-house text-base"></i><span>Bazaar</span></button>
-    <button data-tab="tabTrack" class="nav-tab-btn flex flex-col items-center text-slate-500"><i class="fa-solid fa-truck-fast text-base"></i><span>Track</span></button>
-    <button data-tab="tabWishlist" class="nav-tab-btn flex flex-col items-center text-slate-500"><i class="fa-solid fa-heart text-base"></i><span>Wishlist</span></button>
-    <button data-tab="tabCart" class="nav-tab-btn flex flex-col items-center text-slate-500 relative"><i class="fa-solid fa-bag-shopping text-base"></i><span>Bag</span><span id="cartCountBadge" class="hidden absolute top-0 right-2 w-2 h-2 rounded-full bg-[#9c1261]"></span></button>
   </nav>
 
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- Firebase Login Modal -->
+  <div id="authModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-base text-slate-800">MithilaMart Account</h3>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-700"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div id="loggedOutView" class="space-y-3">
+        <p class="text-xs text-slate-500">Order place aur track karne ke liye Google ya Mobile OTP se verify karein.</p>
+        <button onclick="loginWithGoogle()" class="w-full border border-slate-300 hover:bg-slate-50 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4" /> Continue with Google
+        </button>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-2 text-[11px] text-slate-400 font-bold">YA MOBILE OTP</span>
+          <div class="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <div id="phoneStep">
+          <div class="flex gap-2">
+            <span class="px-3 py-2.5 bg-slate-100 rounded-xl text-sm font-bold text-slate-600">+91</span>
+            <input type="tel" id="loginPhone" maxlength="10" placeholder="Mobile Number" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-bold" />
+          </div>
+          <div id="recaptcha-container" class="mt-2"></div>
+          <button onclick="sendPhoneOtp()" class="w-full mt-2.5 bg-[#9c1261] text-white font-bold py-2.5 rounded-xl text-sm">OTP Bhejein</button>
+        </div>
+
+        <div id="otpStep" class="hidden space-y-2">
+          <input type="number" id="otpCode" placeholder="6-Digit OTP daalein" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm font-bold text-center tracking-widest" />
+          <button onclick="verifyPhoneOtp()" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-sm">Verify OTP</button>
+        </div>
+      </div>
+
+      <div id="loggedInView" class="hidden space-y-3 text-center">
+        <div class="w-12 h-12 rounded-full bg-pink-100 text-[#9c1261] flex items-center justify-center mx-auto text-xl font-extrabold">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+        <p id="userProfileInfo" class="text-sm font-bold text-slate-800"></p>
+        <button onclick="logoutUser()" class="w-full bg-rose-50 text-rose-600 font-bold py-2.5 rounded-xl text-xs">Logout Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cancel / Return Modal -->
+  <div id="cancelModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-5 space-y-3 shadow-2xl">
+      <h3 class="font-extrabold text-base text-slate-800">Order Cancel / Return Request</h3>
+      <input type="hidden" id="cancelOrderId" />
+      <select id="cancelActionType" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm font-bold">
+        <option value="Direct Order Cancellation">Order Cancel Karna Hai</option>
+        <option value="Return / Exchange Request">Order Return / Replace Karna Hai</option>
+      </select>
+      <textarea id="cancelReason" rows="2" placeholder="Wajah likhein..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+      <div class="flex gap-2">
+        <button onclick="closeCancelModal()" class="flex-1 bg-slate-100 font-bold py-2.5 rounded-xl text-xs">Band Karein</button>
+        <button onclick="submitCancelRequest()" class="flex-1 bg-rose-600 text-white font-bold py-2.5 rounded-xl text-xs">Submit Request</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const APP_CONFIG = {
+      backendApiUrl: "https://script.google.com/macros/s/AKfycbylRj3UWoF9Nr9fbJqrGHweFVZdm6TGBt9dUWtg5C9F1pzr-rv-70FvDP3E3QCey35/exec",
+      merchantUpi: "6205005743@ptyes",
+      merchantName: "Bebi Chaudhary",
       firebaseConfig: {
-        apiKey: "AIzaSyAs-DEMO-FIREBASE-KEY",
+        apiKey: "YOUR_FIREBASE_WEB_API_KEY",
         authDomain: "mithilamart-shop.firebaseapp.com",
         projectId: "mithilamart-shop",
         storageBucket: "mithilamart-shop.appspot.com",
-        messagingSenderId: "1234567890",
-        appId: "1:1234567890:web:abcdef"
-      },
-      backendApiUrl: "YOUR_APPS_SCRIPT_DEPLOYMENT_EXEC_URL", // Apps Script Web App Deployment URL yahan aayega
-      upiId: "6205005743@ptyes",
-      merchantName: "Bebi Chaudhary"
+        appId: "1:000000000000:web:mithilamart"
+      }
     };
 
     firebase.initializeApp(APP_CONFIG.firebaseConfig);
     const auth = firebase.auth();
 
-    let productsCatalog = [];
-    let cart = [];
-    let wishlist = [];
-    let appliedCoupon = null;
-    let selectedPaymentMode = 'ONLINE';
-    let phoneConfirmationResult = null;
-    let pendingOrderPayload = null;
+    let allProducts = [];
+    let selectedCategory = 'All';
+    let cart = JSON.parse(localStorage.getItem('mm_cart') || '[]');
+    let wishlist = JSON.parse(localStorage.getItem('mm_wish') || '[]');
+    let activeCoupon = null;
+    let paymentMethod = 'COD';
+    let currentUser = null;
+    let confirmationResult = null;
+    let deferredPrompt = null;
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').classList.remove('hidden');
+    });
+
+    function installPWA() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt = null;
+      }
     }
 
-    async function getAuthToken() {
-      const user = auth.currentUser;
-      if (!user) return null;
-      return await user.getIdToken(true);
-    }
+    auth.onAuthStateChanged((user) => {
+      currentUser = user;
+      if (user) {
+        document.getElementById('authHeaderText').innerText = (user.displayName || user.phoneNumber || 'Verified').split(' ')[0];
+        document.getElementById('loggedOutView').classList.add('hidden');
+        document.getElementById('loggedInView').classList.remove('hidden');
+        document.getElementById('userProfileInfo').innerText = user.email || user.phoneNumber || user.uid;
+        if (user.phoneNumber) document.getElementById('custPhone').value = user.phoneNumber.replace('+91', '');
+        if (user.displayName) document.getElementById('custName').value = user.displayName;
+      } else {
+        document.getElementById('authHeaderText').innerText = 'Login';
+        document.getElementById('loggedOutView').classList.remove('hidden');
+        document.getElementById('loggedInView').classList.add('hidden');
+      }
+    });
 
-    async function fetchProducts() {
-      const statusTitle = document.getElementById('catalogStatusTitle');
-      const countEl = document.getElementById('catalogCount');
+    async function loadCatalog() {
       try {
-        const res = await fetch(`${APP_CONFIG.backendApiUrl}?action=getProducts`);
+        const res = await fetch(APP_CONFIG.backendApiUrl + '?action=getProducts');
         const data = await res.json();
-        if (data.success && data.products) {
-          productsCatalog = data.products;
+        if (data.success && Array.isArray(data.products)) {
+          allProducts = data.products;
           renderCategories();
-          renderProductsGrid(productsCatalog);
-          countEl.textContent = `${productsCatalog.length} items active`;
-          renderCart();
-        } else {
-          statusTitle.textContent = "Error loading store items";
+          renderCatalog();
         }
       } catch (err) {
-        statusTitle.textContent = "Network error loading catalog";
+        document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-xs text-rose-500 py-8">Catalog load nahi ho paya. Internet check karein.</p>';
       }
     }
 
     function renderCategories() {
-      const catSet = new Set(['All']);
-      productsCatalog.forEach(p => catSet.add(p.category));
-      const container = document.getElementById('categoryContainer');
-      container.innerHTML = '';
-      catSet.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = `cat-chip px-3 py-1.5 rounded-xl border whitespace-nowrap text-xs font-bold ${cat === 'All' ? 'bg-[#9c1261] text-white' : 'bg-white text-slate-700'}`;
-        btn.textContent = cat;
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.cat-chip').forEach(c => c.className = 'cat-chip px-3 py-1.5 rounded-xl border whitespace-nowrap text-xs font-bold bg-white text-slate-700');
-          btn.className = 'cat-chip px-3 py-1.5 rounded-xl border whitespace-nowrap text-xs font-bold bg-[#9c1261] text-white';
-          const filtered = cat === 'All' ? productsCatalog : productsCatalog.filter(p => p.category === cat);
-          renderProductsGrid(filtered);
-        });
-        container.appendChild(btn);
-      });
+      const cats = ['All', ...new Set(allProducts.map(p => p.category).filter(Boolean))];
+      document.getElementById('categoryBar').innerHTML = cats.map(c => `
+        <button onclick="selectedCategory='${c}'; renderCategories(); renderCatalog();"
+          class="px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition ${selectedCategory === c ? 'bg-[#9c1261] text-white shadow' : 'bg-white text-slate-600 border border-slate-200'}">
+          ${c}
+        </button>
+      `).join('');
     }
 
-    function renderProductsGrid(list) {
-      const grid = document.getElementById('productsGrid');
-      grid.innerHTML = '';
-      if (!list.length) {
-        grid.innerHTML = '<div class="col-span-2 py-10 text-center text-slate-400">Koi item nahi mila</div>';
+    function renderCatalog() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = allProducts.filter(p => {
+        const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
+        const matchQ = p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      const grid = document.getElementById('productGrid');
+      if (!filtered.length) {
+        grid.innerHTML = '<p class="col-span-full text-center text-xs text-slate-400 py-10">Koi product nahi mila.</p>';
         return;
       }
 
-      list.forEach(item => {
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs flex flex-col justify-between p-2";
+      grid.innerHTML = filtered.map(p => {
+        const inCart = cart.find(c => c.id === p.id);
+        const isWished = wishlist.includes(p.id);
+        const off = p.mrp > p.price ? Math.round(((p.mrp - p.price) / p.mrp) * 100) : 0;
 
-        const img = document.createElement('img');
-        img.src = item.image;
-        img.alt = item.name;
-        img.loading = "lazy";
-        img.className = "w-full h-32 object-cover rounded-xl";
-        img.onerror = () => { img.src = "https://placehold.co/400x300/9c1261/ffffff?text=MithilaMart"; };
-
-        const title = document.createElement('h4');
-        title.className = "font-bold text-xs text-slate-900 mt-1 line-clamp-2";
-        title.textContent = item.name;
-
-        const priceRow = document.createElement('div');
-        priceRow.className = "flex items-baseline justify-between mt-1";
-        priceRow.innerHTML = `<span class="font-black text-slate-900 text-sm">₹${item.price}</span><span class="text-[10px] text-slate-400 line-through">₹${item.mrp}</span>`;
-
-        const btnAdd = document.createElement('button');
-        btnAdd.className = "w-full mt-2 bg-[#9c1261] text-white font-bold text-xs py-1.5 rounded-xl active:scale-95 transition";
-        btnAdd.textContent = "Add to Bag +";
-        btnAdd.addEventListener('click', () => addToBag(item.id));
-
-        card.appendChild(img);
-        card.appendChild(title);
-        card.appendChild(priceRow);
-        card.appendChild(btnAdd);
-        grid.appendChild(card);
-      });
-    }
-
-    function addToBag(id) {
-      const exist = cart.find(c => c.id === id);
-      if (exist) exist.quantity += 1;
-      else cart.push({ id, quantity: 1 });
-      saveCartState();
-      renderCart();
-    }
-
-    function saveCartState() {
-      localStorage.setItem('mm_cart_ids', JSON.stringify(cart));
-      updateCartBadge();
-    }
-
-    function updateCartBadge() {
-      const count = cart.reduce((acc, c) => acc + c.quantity, 0);
-      const b = document.getElementById('cartCountBadge');
-      b.textContent = count;
-      b.classList.toggle('hidden', count === 0);
-    }
-
-    function renderCart() {
-      const list = document.getElementById('cartItemsList');
-      list.innerHTML = '';
-      let subtotal = 0;
-
-      cart.forEach(cItem => {
-        const prod = productsCatalog.find(p => p.id === cItem.id);
-        if (!prod) return;
-        subtotal += prod.price * cItem.quantity;
-
-        const row = document.createElement('div');
-        row.className = "py-2 flex items-center justify-between";
-        row.innerHTML = `
-          <div class="truncate flex-1">
-            <p class="font-bold text-slate-900 truncate">${escapeHtml(prod.name)}</p>
-            <span class="text-slate-600">₹${prod.price} x ${cItem.quantity}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <button class="px-2 py-0.5 bg-slate-100 rounded font-bold" data-dec="${prod.id}">-</button>
-            <span class="font-bold">${cItem.quantity}</span>
-            <button class="px-2 py-0.5 bg-slate-100 rounded font-bold" data-inc="${prod.id}">+</button>
+        return `
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col justify-between relative">
+            ${p.badge ? `<span class="absolute top-2 left-2 bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md shadow-xs">${p.badge}</span>` : ''}
+            <button onclick="toggleWish('${p.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 shadow flex items-center justify-center ${isWished ? 'text-rose-500' : 'text-slate-400'}">
+              <i class="fa-${isWished ? 'solid' : 'regular'} fa-heart text-xs"></i>
+            </button>
+            <img src="${p.image || 'https://placehold.co/300x220?text=MithilaMart'}" alt="${p.name}" class="w-full h-32 object-cover bg-slate-50" />
+            <div class="p-3 flex-1 flex flex-col justify-between">
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">${p.category}</p>
+                <h3 class="font-bold text-xs text-slate-800 line-clamp-2 mt-0.5">${p.name}</h3>
+              </div>
+              <div class="mt-2.5">
+                <div class="flex items-baseline gap-1.5">
+                  <span class="font-extrabold text-sm text-slate-900">₹${p.price}</span>
+                  ${p.mrp > p.price ? `<span class="text-[11px] text-slate-400 line-through">₹${p.mrp}</span>` : ''}
+                  ${off > 0 ? `<span class="text-[10px] font-extrabold text-emerald-600">${off}% OFF</span>` : ''}
+                </div>
+                ${inCart ? `
+                  <div class="mt-2 flex items-center justify-between bg-[#9c1261] text-white rounded-xl px-2 py-1">
+                    <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 font-extrabold">-</button>
+                    <span class="text-xs font-extrabold">${inCart.quantity}</span>
+                    <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 font-extrabold">+</button>
+                  </div>
+                ` : `
+                  <button onclick="addToCart('${p.id}')" class="mt-2 w-full bg-pink-50 hover:bg-[#9c1261] text-[#9c1261] hover:text-white border border-pink-200 font-extrabold text-xs py-1.5 rounded-xl transition">
+                    + Add to Bag
+                  </button>
+                `}
+              </div>
+            </div>
           </div>
         `;
-        list.appendChild(row);
-      });
-
-      list.querySelectorAll('[data-dec]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-dec');
-          const it = cart.find(c => c.id === id);
-          if (it) {
-            it.quantity -= 1;
-            if (it.quantity <= 0) cart = cart.filter(c => c.id !== id);
-            saveCartState();
-            renderCart();
-          }
-        });
-      });
-
-      list.querySelectorAll('[data-inc]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const id = btn.getAttribute('data-inc');
-          const it = cart.find(c => c.id === id);
-          if (it && it.quantity < 20) {
-            it.quantity += 1;
-            saveCartState();
-            renderCart();
-          }
-        });
-      });
-
-      const delivery = subtotal >= 199 || subtotal === 0 ? 0 : 40;
-      let discount = 0;
-      if (appliedCoupon === 'RAHUL50' && subtotal >= 200) discount = 50;
-      if (appliedCoupon === 'DIWALI100' && subtotal >= 599) discount = 100;
-
-      document.getElementById('billSubtotal').textContent = `₹${subtotal}`;
-      document.getElementById('billDelivery').textContent = delivery === 0 ? 'FREE' : `₹${delivery}`;
-      document.getElementById('billTotal').textContent = `₹${Math.max(0, subtotal - discount + delivery)}`;
-
-      const discRow = document.getElementById('couponDiscountRow');
-      if (discount > 0) {
-        discRow.classList.remove('hidden');
-        document.getElementById('billDiscount').textContent = `-₹${discount}`;
-      } else {
-        discRow.classList.add('hidden');
-      }
+      }).join('');
     }
 
-    document.getElementById('applyCouponBtn').addEventListener('click', () => {
+    function addToCart(id) {
+      const existing = cart.find(c => c.id === id);
+      if (existing) existing.quantity++;
+      else cart.push({ id, quantity: 1 });
+      saveCart();
+    }
+
+    function updateQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) cart = cart.filter(c => c.id !== id);
+      saveCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem('mm_cart', JSON.stringify(cart));
+      const count = cart.reduce((s, i) => s + i.quantity, 0);
+      const badge = document.getElementById('bagBadge');
+      badge.innerText = count;
+      badge.classList.toggle('hidden', count === 0);
+      renderCatalog();
+      renderBag();
+    }
+
+    function toggleWish(id) {
+      if (wishlist.includes(id)) wishlist = wishlist.filter(w => w !== id);
+      else wishlist.push(id);
+      localStorage.setItem('mm_wish', JSON.stringify(wishlist));
+      renderCatalog();
+      renderWishlist();
+    }
+
+    function renderWishlist() {
+      const items = allProducts.filter(p => wishlist.includes(p.id));
+      const grid = document.getElementById('wishlistGrid');
+      if (!items.length) {
+        grid.innerHTML = '<p class="col-span-full text-center text-xs text-slate-400 py-10">Aapki wishlist abhi khali hai.</p>';
+        return;
+      }
+      grid.innerHTML = items.map(p => `
+        <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+          <img src="${p.image}" class="w-full h-24 object-cover rounded-xl" />
+          <h4 class="font-bold text-xs line-clamp-1">${p.name}</h4>
+          <p class="font-extrabold text-sm text-[#9c1261]">₹${p.price}</p>
+          <button onclick="addToCart('${p.id}'); switchTab('bag');" class="w-full bg-[#9c1261] text-white text-xs font-bold py-1.5 rounded-lg">Move to Bag</button>
+        </div>
+      `).join('');
+    }
+
+    function applyCoupon() {
       const code = document.getElementById('couponInput').value.trim().toUpperCase();
       const msg = document.getElementById('couponMsg');
-      if (code === 'RAHUL50' || code === 'DIWALI100') {
-        appliedCoupon = code;
-        msg.textContent = `Coupon ${code} applied for verification.`;
-        msg.className = "text-[10px] font-bold text-center text-emerald-600";
-        msg.classList.remove('hidden');
+      if (code === 'RAHUL50') {
+        activeCoupon = { code: 'RAHUL50', discount: 50, min: 200 };
+        msg.className = 'text-xs mt-1.5 font-bold text-emerald-600';
+        msg.innerText = 'RAHUL50 applied! (₹200+ order par ₹50 off)';
+      } else if (code === 'DIWALI100') {
+        activeCoupon = { code: 'DIWALI100', discount: 100, min: 599 };
+        msg.className = 'text-xs mt-1.5 font-bold text-emerald-600';
+        msg.innerText = 'DIWALI100 applied! (₹599+ order par ₹100 off)';
       } else {
-        appliedCoupon = null;
-        msg.textContent = "Invalid coupon code.";
-        msg.className = "text-[10px] font-bold text-center text-rose-600";
-        msg.classList.remove('hidden');
+        activeCoupon = null;
+        msg.className = 'text-xs mt-1.5 font-bold text-rose-500';
+        msg.innerText = 'Invalid coupon code.';
       }
-      renderCart();
-    });
+      renderBag();
+    }
 
-    document.getElementById('btnProceedToAddress').addEventListener('click', () => {
-      if (!auth.currentUser) {
-        document.getElementById('authModal').classList.remove('hidden');
-        return;
-      }
+    function selectPayment(mode) {
+      paymentMethod = mode;
+      document.getElementById('payBtnCod').className = mode === 'COD' ? 'p-3 rounded-xl border-2 border-[#9c1261] bg-pink-50 text-left' : 'p-3 rounded-xl border-2 border-slate-200 bg-white text-left';
+      document.getElementById('payBtnOnline').className = mode === 'ONLINE' ? 'p-3 rounded-xl border-2 border-[#9c1261] bg-pink-50 text-left' : 'p-3 rounded-xl border-2 border-slate-200 bg-white text-left';
+      document.getElementById('upiDetailsBox').classList.toggle('hidden', mode !== 'ONLINE');
+      renderBag();
+    }
+
+    function copyUpi() {
+      navigator.clipboard.writeText(APP_CONFIG.merchantUpi);
+      alert('UPI ID copied: ' + APP_CONFIG.merchantUpi);
+    }
+
+    function renderBag() {
+      const list = document.getElementById('cartItemsList');
+      const box = document.getElementById('checkoutBox');
+
       if (!cart.length) {
-        alert("Bag khali hai.");
+        list.innerHTML = '<div class="bg-white rounded-2xl p-8 text-center text-slate-400 text-xs">Aapka bag khali hai. Bazaar se saman add karein!</div>';
+        box.classList.add('hidden');
         return;
       }
-      document.getElementById('checkoutAddressSection').classList.remove('hidden');
-      document.getElementById('checkoutAddressSection').scrollIntoView({ behavior: 'smooth' });
-    });
 
-    document.querySelectorAll('.pay-method-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.pay-method-btn').forEach(b => b.className = 'pay-method-btn border border-slate-300 p-2.5 rounded-xl font-bold text-center text-slate-600');
-        btn.className = 'pay-method-btn border-2 border-[#9c1261] bg-pink-50 p-2.5 rounded-xl font-bold text-center text-slate-900';
-        selectedPaymentMode = btn.getAttribute('data-pay');
-      });
-    });
+      box.classList.remove('hidden');
+      let subtotal = 0;
 
-    document.getElementById('btnPlaceOrderFinal').addEventListener('click', async () => {
-      const idToken = await getAuthToken();
-      if (!idToken) {
-        document.getElementById('authModal').classList.remove('hidden');
+      list.innerHTML = cart.map(c => {
+        const p = allProducts.find(x => x.id === c.id);
+        if (!p) return '';
+        subtotal += p.price * c.quantity;
+        return `
+          <div class="bg-white p-3 rounded-2xl border border-slate-100 flex items-center justify-between gap-3">
+            <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover bg-slate-50" />
+            <div class="flex-1">
+              <h4 class="font-bold text-xs text-slate-800">${p.name}</h4>
+              <p class="font-extrabold text-sm text-[#9c1261] mt-0.5">₹${p.price * c.quantity}</p>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-100 rounded-xl px-2 py-1">
+              <button onclick="updateQty('${p.id}', -1)" class="w-6 h-6 font-extrabold text-slate-700">-</button>
+              <span class="text-xs font-extrabold">${c.quantity}</span>
+              <button onclick="updateQty('${p.id}', 1)" class="w-6 h-6 font-extrabold text-slate-700">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      let discount = (activeCoupon && subtotal >= activeCoupon.min) ? activeCoupon.discount : 0;
+      let delivery = subtotal >= 199 ? 0 : 40;
+      let codFee = (paymentMethod === 'COD' && subtotal < 99) ? 19 : 0;
+      let total = Math.max(0, (subtotal - discount) + delivery + codFee);
+
+      document.getElementById('billSubtotal').innerText = '₹' + subtotal;
+      document.getElementById('billDiscount').innerText = '-₹' + discount;
+      document.getElementById('billDelivery').innerText = delivery === 0 ? 'FREE' : '₹' + delivery;
+      document.getElementById('codFeeRow').classList.toggle('hidden', codFee === 0);
+      document.getElementById('billCodFee').innerText = '₹' + codFee;
+      document.getElementById('billTotal').innerText = '₹' + total;
+
+      document.getElementById('upiDeepLink').href = `upi://pay?pa=${APP_CONFIG.merchantUpi}&pn=Bebi%20Chaudhary&am=${total}&cu=INR&tn=MithilaMart`;
+    }
+
+    async function submitOrder() {
+      if (!currentUser) {
+        openAuthModal();
         return;
       }
 
@@ -521,258 +540,166 @@
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
       const landmark = document.getElementById('custLandmark').value.trim();
+      const utr = document.getElementById('utrInput').value.trim();
 
-      if (name.length < 3 || phone.length !== 10 || address.length < 8) {
-        alert("Kripya sahi naam, 10-digit mobile number aur pura address bharein.");
+      if (!name || !/^[0-9]{10}$/.test(phone) || !address) {
+        alert('Kripya sahi Naam, 10-digit Mobile Number aur Address bharein.');
         return;
       }
 
-      pendingOrderPayload = {
-        action: 'createOrder',
-        idToken: idToken,
-        items: cart,
-        couponCode: appliedCoupon,
-        paymentMethod: selectedPaymentMode,
-        customer: { name, phone, address, landmark, pincode: '852131' }
-      };
-
-      if (selectedPaymentMode === 'ONLINE') {
-        openLocalUpiModal();
-      } else {
-        submitOrderToBackend(pendingOrderPayload);
-      }
-    });
-
-    function openLocalUpiModal() {
-      const container = document.getElementById('localQrCodeContainer');
-      container.innerHTML = '';
-      const dummyUrl = `upi://pay?pa=${APP_CONFIG.upiId}&pn=${encodeURIComponent(APP_CONFIG.merchantName)}&cu=INR`;
-      new QRCode(container, { text: dummyUrl, width: 180, height: 180 });
-      document.getElementById('upiModal').classList.remove('hidden');
-    }
-
-    document.getElementById('btnCloseUpiModal').addEventListener('click', () => {
-      document.getElementById('upiModal').classList.add('hidden');
-    });
-
-    document.getElementById('btnSubmitUtrFinal').addEventListener('click', () => {
-      const utr = document.getElementById('utrInputValue').value.trim();
-      const err = document.getElementById('utrErrorText');
-      if (!/^[0-9]{12}$/.test(utr)) {
-        err.classList.remove('hidden');
+      if (paymentMethod === 'ONLINE' && !/^[0-9]{12}$/.test(utr)) {
+        alert('UPI payment ke baad 12-digit UTR number zaroor daalein.');
         return;
       }
-      err.classList.add('hidden');
-      document.getElementById('upiModal').classList.add('hidden');
-      pendingOrderPayload.utr = utr;
-      submitOrderToBackend(pendingOrderPayload);
-    });
 
-    async function submitOrderToBackend(payload) {
-      const btn = document.getElementById('btnPlaceOrderFinal');
+      const btn = document.getElementById('placeOrderBtn');
       btn.disabled = true;
-      btn.textContent = "Verifying with server...";
+      btn.innerText = 'Order Place Ho Raha Hai...';
 
       try {
+        const idToken = await currentUser.getIdToken();
         const res = await fetch(APP_CONFIG.backendApiUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({
+            action: 'createOrder',
+            idToken,
+            items: cart,
+            customer: { name, phone, address, landmark, pincode: '852131' },
+            paymentMethod,
+            utr,
+            couponCode: activeCoupon ? activeCoupon.code : ''
+          })
         });
-        const data = await res.json();
 
+        const data = await res.json();
         if (data.success) {
-          alert(`Order Successfully Placed! Order ID: ${data.orderId}`);
+          alert('Order Confirm Ho Gaya! Order ID: ' + data.orderId);
           cart = [];
-          saveCartState();
-          appliedCoupon = null;
-          renderCart();
-          document.getElementById('checkoutAddressSection').classList.add('hidden');
-          switchTab('tabTrack');
-          fetchMyOrders();
+          activeCoupon = null;
+          saveCart();
+          switchTab('track');
         } else {
-          alert(`Order Failed: ${data.error}`);
+          alert('Error: ' + (data.error || 'Order fail ho gaya'));
         }
-      } catch (err) {
-        alert("Server communication error. Kripya dubara koshish karein.");
+      } catch (e) {
+        alert('Network error. Dobara try karein.');
       } finally {
         btn.disabled = false;
-        btn.textContent = "Place Verified Order";
+        btn.innerHTML = 'Confirm & Place Order <i class="fa-solid fa-arrow-right ml-1"></i>';
       }
     }
 
     async function fetchMyOrders() {
-      const container = document.getElementById('trackingListContainer');
-      const idToken = await getAuthToken();
-      if (!idToken) {
-        container.innerHTML = '<div class="p-4 text-center text-slate-400">Login to track orders.</div>';
+      const box = document.getElementById('ordersList');
+      if (!currentUser) {
+        box.innerHTML = '<div class="bg-white p-6 rounded-2xl text-center space-y-2"><p class="text-xs text-slate-500">Orders dekhne ke liye login karein.</p><button onclick="openAuthModal()" class="bg-[#9c1261] text-white text-xs font-bold px-4 py-2 rounded-xl">Login Karein</button></div>';
         return;
       }
 
-      container.innerHTML = '<div class="p-4 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i> Fetching orders...</div>';
-
+      box.innerHTML = '<p class="text-center text-xs text-slate-400 py-8">Orders load ho rahe hain...</p>';
       try {
+        const idToken = await currentUser.getIdToken();
         const res = await fetch(APP_CONFIG.backendApiUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ action: 'trackMyOrders', idToken })
         });
         const data = await res.json();
 
-        if (data.success && data.orders) {
-          if (!data.orders.length) {
-            container.innerHTML = '<div class="p-4 text-center text-slate-400">No active orders found.</div>';
-            return;
-          }
-
-          container.innerHTML = '';
-          data.orders.forEach(o => {
-            const card = document.createElement('div');
-            card.className = "bg-white border rounded-xl p-3 text-xs space-y-1.5 shadow-xs";
-            card.innerHTML = `
-              <div class="flex justify-between font-bold border-b pb-1">
-                <span>${escapeHtml(o.orderId)}</span>
-                <span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">${escapeHtml(o.orderStatus)}</span>
-              </div>
-              <p class="text-slate-600">Total: <strong>₹${o.finalAmount}</strong> (${escapeHtml(o.paymentMethod)})</p>
-              <p class="text-slate-500 text-[10px]">Payment: ${escapeHtml(o.paymentStatus)}</p>
-              <p class="text-slate-600 text-[11px]">Address: ${escapeHtml(o.address)}</p>
-            `;
-            container.appendChild(card);
-          });
+        if (!data.orders || !data.orders.length) {
+          box.innerHTML = '<div class="bg-white p-8 rounded-2xl text-center text-xs text-slate-400">Abhi tak koi order nahi hai.</div>';
+          return;
         }
+
+        box.innerHTML = data.orders.map(o => `
+          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[11px] font-extrabold text-[#9c1261] bg-pink-50 px-2 py-0.5 rounded">${o.orderId}</span>
+                <p class="text-[11px] text-slate-400 mt-1">${new Date(o.createdAt).toLocaleString('en-IN')}</p>
+              </div>
+              <span class="text-xs font-extrabold px-2.5 py-1 rounded-full ${o.orderStatus === 'Delivered' ? 'bg-emerald-100 text-emerald-700' : o.orderStatus === 'Cancelled' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}">
+                ${o.orderStatus}
+              </span>
+            </div>
+            <div class="text-xs text-slate-600 space-y-0.5">
+              ${o.items.map(i => `<p>• ${i.quantity}x ${i.name} (₹${i.price * i.quantity})</p>`).join('')}
+            </div>
+            <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+              <span class="font-extrabold text-sm text-slate-900">Total: ₹${o.finalAmount} (${o.paymentMethod})</span>
+              ${o.orderStatus !== 'Cancelled' ? `<button onclick="openCancelModal('${o.orderId}')" class="text-[11px] text-rose-600 font-bold underline">Cancel / Return</button>` : ''}
+            </div>
+          </div>
+        `).join('');
       } catch (e) {
-        container.innerHTML = '<div class="p-4 text-center text-rose-500">Tracking fetch failed.</div>';
+        box.innerHTML = '<p class="text-center text-xs text-rose-500">Orders load nahi ho paye.</p>';
       }
     }
 
-    document.getElementById('btnRefreshTracking').addEventListener('click', fetchMyOrders);
+    function openCancelModal(orderId) {
+      document.getElementById('cancelOrderId').value = orderId;
+      document.getElementById('cancelModal').classList.remove('hidden');
+    }
+    function closeCancelModal() { document.getElementById('cancelModal').classList.add('hidden'); }
 
-    document.getElementById('btnSubmitCancelReturn').addEventListener('click', async () => {
-      const idToken = await getAuthToken();
-      if (!idToken) {
-        alert("Login required.");
-        return;
-      }
-      const orderId = document.getElementById('cancelOrderId').value.trim();
-      const actionType = document.getElementById('cancelActionSelect').value;
-      const reason = document.getElementById('cancelReasonInput').value.trim();
+    async function submitCancelRequest() {
+      const orderId = document.getElementById('cancelOrderId').value;
+      const actionType = document.getElementById('cancelActionType').value;
+      const reason = document.getElementById('cancelReason').value.trim();
+      if (!reason) return alert('Wajah likhna zaroori hai.');
 
-      if (!orderId || !reason) {
-        alert("Order ID aur Reason bharein.");
-        return;
-      }
-
+      const idToken = await currentUser.getIdToken();
       const res = await fetch(APP_CONFIG.backendApiUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: 'cancelRequest', idToken, orderId, actionType, reason })
       });
       const data = await res.json();
-      if (data.success) {
-        alert("Request submit ho gayi.");
-        fetchMyOrders();
-      } else {
-        alert(data.error);
-      }
-    });
-
-    document.getElementById('headerAuthBtn').addEventListener('click', () => {
-      if (auth.currentUser) {
-        if (confirm("Logout karna chahte hain?")) {
-          auth.signOut();
-          localStorage.removeItem('mm_cart_ids');
-          cart = [];
-          renderCart();
-        }
-      } else {
-        document.getElementById('authModal').classList.remove('hidden');
-      }
-    });
-
-    document.getElementById('closeAuthModal').addEventListener('click', () => {
-      document.getElementById('authModal').classList.add('hidden');
-    });
-
-    document.getElementById('btnGoogleAuth').addEventListener('click', () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider).then(() => {
-        document.getElementById('authModal').classList.add('hidden');
-      }).catch(err => showAuthError(err.message));
-    });
-
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptchaContainer', { size: 'invisible' });
-
-    document.getElementById('btnSendSmsOtp').addEventListener('click', () => {
-      const phone = document.getElementById('authPhone').value.trim();
-      if (!/^[6-9]\d{9}$/.test(phone)) {
-        showAuthError("10-digit sahi mobile number dalein.");
-        return;
-      }
-      auth.signInWithPhoneNumber(`+91${phone}`, window.recaptchaVerifier)
-        .then(res => {
-          phoneConfirmationResult = res;
-          document.getElementById('phoneInputStep').classList.add('hidden');
-          document.getElementById('otpVerifyStep').classList.remove('hidden');
-        })
-        .catch(err => showAuthError(err.message));
-    });
-
-    document.getElementById('btnConfirmOtp').addEventListener('click', () => {
-      const code = document.getElementById('authOtpCode').value.trim();
-      if (phoneConfirmationResult && code.length === 6) {
-        phoneConfirmationResult.confirm(code).then(() => {
-          document.getElementById('authModal').classList.add('hidden');
-        }).catch(() => showAuthError("Invalid OTP Code."));
-      }
-    });
-
-    function showAuthError(txt) {
-      const err = document.getElementById('authErrorMsg');
-      err.textContent = txt;
-      err.classList.remove('hidden');
+      alert(data.message || data.error);
+      closeCancelModal();
+      fetchMyOrders();
     }
 
-    auth.onAuthStateChanged(user => {
-      const txt = document.getElementById('headerAuthText');
-      if (user) {
-        txt.textContent = user.displayName ? user.displayName.split(' ')[0] : 'Account';
-        fetchMyOrders();
-      } else {
-        txt.textContent = "Login";
-      }
-    });
-
-    function switchTab(targetId) {
-      ['tabCatalog', 'tabCart', 'tabWishlist', 'tabTrack'].forEach(t => document.getElementById(t).classList.add('hidden'));
-      document.getElementById(targetId).classList.remove('hidden');
-      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-        const matches = btn.getAttribute('data-tab') === targetId;
-        btn.classList.toggle('text-[#9c1261]', matches);
-        btn.classList.toggle('text-slate-500', !matches);
+    function switchTab(tab) {
+      ['bazaar', 'bag', 'wishlist', 'track'].forEach(t => {
+        document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+        document.getElementById('nav-' + t).className = t === tab ? 'text-[#9c1261] relative flex flex-col items-center gap-0.5' : 'text-slate-400 relative flex flex-col items-center gap-0.5';
       });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (tab === 'bag') renderBag();
+      if (tab === 'wishlist') renderWishlist();
+      if (tab === 'track') fetchMyOrders();
     }
 
-    document.querySelectorAll('.nav-tab-btn').forEach(b => {
-      b.addEventListener('click', () => switchTab(b.getAttribute('data-tab')));
-    });
+    function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+    function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
 
-    document.getElementById('headerCartBtn').addEventListener('click', () => switchTab('tabCart'));
-    document.getElementById('headerWishlistBtn').addEventListener('click', () => switchTab('tabWishlist'));
-    document.getElementById('brandLogoHome').addEventListener('click', () => switchTab('tabCatalog'));
+    function loginWithGoogle() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).then(() => closeAuthModal()).catch(e => alert(e.message));
+    }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      try {
-        cart = JSON.parse(localStorage.getItem('mm_cart_ids') || '[]');
-      } catch(e) { cart = []; }
-      updateCartBadge();
-      fetchProducts();
-
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js').catch(() => {});
+    function sendPhoneOtp() {
+      const num = document.getElementById('loginPhone').value.trim();
+      if (!/^[0-9]{10}$/.test(num)) return alert('Sahi 10-digit number daalein.');
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
       }
-    });
+      auth.signInWithPhoneNumber('+91' + num, window.recaptchaVerifier)
+        .then(res => {
+          confirmationResult = res;
+          document.getElementById('phoneStep').classList.add('hidden');
+          document.getElementById('otpStep').classList.remove('hidden');
+        }).catch(e => alert(e.message));
+    }
+
+    function verifyPhoneOtp() {
+      const code = document.getElementById('otpCode').value.trim();
+      confirmationResult.confirm(code).then(() => closeAuthModal()).catch(() => alert('Galat OTP!'));
+    }
+
+    function logoutUser() { auth.signOut().then(() => closeAuthModal()); }
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+    saveCart();
+    loadCatalog();
   </script>
 </body>
 </html>
